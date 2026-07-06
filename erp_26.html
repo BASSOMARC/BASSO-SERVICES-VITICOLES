@@ -1,0 +1,2046 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Basso ERP">
+<meta name="theme-color" content="#8B1A2B">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="https://i.postimg.cc/bvDHmp47/WhatsApp-Image-2026-05-14-at-17-24-20-(6).jpg">
+<title>Basso Services Viticoles — ERP</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--g:#8B1A2B;--gl:#F5E6E8;--gd:#6B1220;--gold:#C9A84C;--goldl:#FBF3D5;--a:#BA7517;--al:#FAEEDA;--r:#E24B4A;--rl:#FCEBEB;--b:#185FA5;--bl:#E6F1FB;--p:#534AB7;--pl:#EEEDFE;--bg:#fff;--bg2:#f8f8f7;--bg3:#f3f3f1;--text:#1a1a1a;--text2:#6b6b6b;--text3:#999;--border:#e5e5e3;--border2:#d0d0cd;--radius:8px;--radius-lg:12px}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg3);color:var(--text);font-size:14px;min-height:100vh}
+
+/* LOGIN */
+.login-page{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#6B1220 0%,#8B1A2B 50%,#C9A84C 100%);padding:20px}
+.login-box{background:var(--bg);border-radius:20px;padding:36px;width:100%;max-width:360px;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.login-logo{text-align:center;margin-bottom:20px}
+.login-logo img{width:110px;height:110px;object-fit:contain;border-radius:50%}
+.login-title{font-size:18px;font-weight:700;text-align:center;margin-bottom:4px;color:var(--g)}
+.login-sub{font-size:13px;color:var(--text2);text-align:center;margin-bottom:20px}
+.login-err{background:var(--rl);color:#791F1F;border:1px solid var(--r);border-radius:var(--radius);padding:8px 12px;font-size:13px;margin-bottom:10px;text-align:center;display:none}
+
+/* APP */
+.app{display:flex;min-height:100vh}
+.sidebar{width:210px;min-width:210px;background:var(--g);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;overflow-y:auto;z-index:50;transition:transform .25s}
+.logo-area{padding:14px 14px 10px;border-bottom:1px solid rgba(255,255,255,.15);text-align:center}
+.logo-area img{width:80px;height:80px;object-fit:contain;border-radius:50%;border:2px solid var(--gold)}
+.logo-area p{font-size:11px;color:rgba(255,255,255,.7);margin-top:5px;display:flex;align-items:center;justify-content:center;gap:5px}
+.sync-dot{width:7px;height:7px;border-radius:50%;background:#ccc;display:inline-block;flex-shrink:0}
+.sync-dot.ok{background:#4ade80}.sync-dot.err{background:var(--r)}.sync-dot.loading{background:var(--gold);animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.user-badge{background:rgba(255,255,255,.15);border-radius:var(--radius);padding:7px 10px;margin:8px 10px;font-size:12px;color:#fff;display:flex;align-items:center;gap:6px}
+.nav-sec{font-size:9px;font-weight:700;color:rgba(255,255,255,.5);padding:9px 14px 3px;text-transform:uppercase;letter-spacing:.1em}
+.nav-item{display:flex;align-items:center;gap:8px;padding:7px 14px;font-size:13px;cursor:pointer;color:rgba(255,255,255,.75);border-left:2px solid transparent;transition:all .15s}
+.nav-item:hover{background:rgba(255,255,255,.1);color:#fff}
+.nav-item.active{background:rgba(255,255,255,.15);color:#fff;border-left-color:var(--gold);font-weight:600}
+.nav-item i{font-size:15px}
+.nav-logout{margin-top:auto;padding:10px 12px;border-top:1px solid rgba(255,255,255,.15)}
+.main{flex:1;margin-left:210px;display:flex;flex-direction:column;min-height:100vh}
+.topbar{padding:11px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--bg);position:sticky;top:0;z-index:40}
+.topbar-left{display:flex;align-items:center;gap:10px}
+.menu-btn{display:none;background:none;border:none;cursor:pointer;color:var(--text);font-size:20px;padding:2px}
+.topbar h2{font-size:15px;font-weight:600}
+.tbar-r{display:flex;gap:6px}
+.content{padding:14px 18px;flex:1}
+
+/* JEFE UI */
+.jefe-app{min-height:100vh;background:var(--bg3)}
+.jefe-topbar{background:var(--g);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:40}
+.jefe-topbar h1{color:#fff;font-size:16px;font-weight:700}
+.jefe-content{padding:14px 16px;max-width:540px;margin:0 auto}
+
+/* COMPONENTS */
+.btn{padding:5px 12px;font-size:12px;border:1px solid var(--border2);border-radius:var(--radius);cursor:pointer;background:var(--bg);color:var(--text);display:inline-flex;align-items:center;gap:5px;font-family:inherit;transition:all .15s}
+.btn:hover{background:var(--bg2)}.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-g{background:var(--g);border-color:var(--g);color:#fff}.btn-g:hover{background:var(--gd)}
+.btn-gold{background:var(--gold);border-color:var(--gold);color:#fff}
+.btn-r{background:var(--r);border-color:var(--r);color:#fff}
+.btn-b{background:var(--b);border-color:var(--b);color:#fff}
+.btn-sm{padding:3px 8px;font-size:11px}
+.btn-lg{padding:12px 24px;font-size:14px;font-weight:600;width:100%;justify-content:center}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:11px;margin-bottom:13px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin-bottom:13px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:13px}
+.mc{background:var(--bg2);border-radius:var(--radius);padding:12px 14px;border:1px solid var(--border)}
+.mc-l{font-size:11px;color:var(--text2);margin-bottom:3px}.mc-v{font-size:20px;font-weight:600}.mc-s{font-size:11px;color:var(--text3);margin-top:2px}
+.card{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px 16px;margin-bottom:12px}
+.ct{font-size:13px;font-weight:600;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between}
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;padding:6px 9px;font-size:10px;font-weight:600;color:var(--text2);border-bottom:1px solid var(--border);text-transform:uppercase;letter-spacing:.05em;white-space:nowrap}
+td{padding:6px 9px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--bg2)}
+.badge{display:inline-flex;align-items:center;padding:2px 7px;border-radius:20px;font-size:10px;font-weight:600;white-space:nowrap}
+.bg{background:var(--gl);color:var(--gd)}.ba{background:var(--al);color:#633806}.br{background:var(--rl);color:#791F1F}.bb{background:var(--bl);color:var(--b)}.bp{background:var(--pl);color:var(--p)}.bgr{background:#f1efe8;color:#5f5e5a}.bgold{background:var(--goldl);color:#7a5c00}
+input,select,textarea{width:100%;padding:6px 9px;font-size:13px;border:1px solid var(--border2);border-radius:var(--radius);background:var(--bg);color:var(--text);font-family:inherit}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--g)}
+.fg{display:flex;flex-direction:column;gap:3px;margin-bottom:9px}
+.fl{font-size:12px;color:var(--text2);font-weight:500}
+.fr2{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.fr3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px}
+.hidden{display:none!important}
+.alert{padding:8px 12px;border-radius:var(--radius);font-size:13px;margin-bottom:10px;display:flex;align-items:center;gap:7px}
+.al-g{background:var(--gl);color:var(--gd);border:1px solid var(--g)}.al-w{background:var(--al);color:#633806;border:1px solid #EF9F27}.al-r{background:var(--rl);color:#791F1F;border:1px solid var(--r)}.al-gold{background:var(--goldl);color:#7a5c00;border:1px solid var(--gold)}
+.pbar{height:6px;background:var(--bg3);border-radius:3px;overflow:hidden;margin-top:3px}
+.pfill{height:100%;border-radius:3px;background:var(--g)}.pfill.w{background:#EF9F27}.pfill.r{background:var(--r)}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.48);display:flex;align-items:center;justify-content:center;z-index:200;padding:14px}
+.modal{background:var(--bg);border-radius:var(--radius-lg);padding:18px 20px;width:100%;max-width:600px;max-height:92vh;overflow-y:auto;border:1px solid var(--border)}
+.modal-t{font-size:14px;font-weight:600;margin-bottom:13px;display:flex;align-items:center;justify-content:space-between}
+.rtp{background:var(--bg2);border-radius:var(--radius);padding:9px 12px;margin-top:9px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;border:1px solid var(--border)}
+.rtp-l{font-size:10px;color:var(--text2)}.rtp-v{font-size:13px;font-weight:600}
+.spinner{display:inline-block;width:13px;height:13px;border:2px solid var(--border);border-top-color:var(--g);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.empty{text-align:center;padding:28px;color:var(--text3);font-size:13px}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:49}
+.av{width:26px;height:26px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;background:var(--gl);color:var(--gd);flex-shrink:0}
+.tabs{display:flex;border-bottom:1px solid var(--border);margin-bottom:12px;overflow-x:auto}
+.tab{padding:7px 13px;font-size:12px;cursor:pointer;color:var(--text2);border-bottom:2px solid transparent;white-space:nowrap}
+.tab:hover{color:var(--text)}.tab.active{color:var(--g);border-bottom-color:var(--g);font-weight:600}
+.mes-sel{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.mes-sel select{width:auto}
+
+/* KANBAN */
+.kanban{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+.kcol{background:var(--bg2);border-radius:var(--radius-lg);padding:9px;min-height:200px;border:1px solid var(--border)}
+.kcol-h{font-size:10px;font-weight:700;color:var(--text2);margin-bottom:7px;display:flex;align-items:center;justify-content:space-between;text-transform:uppercase;letter-spacing:.07em}
+.kcard{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:8px 10px;margin-bottom:6px;font-size:12px}
+.kcard.confirmado{border-left:3px solid #4ade80}
+.kcard.pendiente-ok{border-left:3px solid var(--gold)}
+.kcard.pend-conf{border-left:3px solid #EF9F27}
+.kcol-over{border:2px dashed var(--g)!important;background:var(--gl)!important}
+.kcard{cursor:grab}.kcard:active{cursor:grabbing}
+.kcard-m{color:var(--text2);font-size:11px;display:flex;flex-direction:column;gap:2px}
+
+/* DRAG & DROP workers */
+.drag-area{display:flex;gap:12px;margin-bottom:9px}
+.drag-col{flex:1;background:var(--bg2);border:2px dashed var(--border2);border-radius:var(--radius);padding:8px;min-height:80px}
+.drag-col.over{border-color:var(--g);background:var(--gl)}
+.drag-col-title{font-size:10px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+.worker-chip{background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:4px 10px;font-size:12px;cursor:grab;display:inline-flex;align-items:center;gap:5px;margin:3px;transition:all .15s;user-select:none}
+.worker-chip:active{cursor:grabbing;opacity:.7}
+.worker-chip.assigned{background:var(--gl);border-color:var(--g);color:var(--gd)}
+
+/* JEFE FICHA */
+.ficha-header{background:linear-gradient(135deg,var(--g),var(--gd));color:#fff;border-radius:var(--radius-lg);padding:18px;margin-bottom:14px;text-align:center}
+.ficha-header h2{font-size:17px;font-weight:700;margin-bottom:3px}
+.worker-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)}
+.worker-row:last-child{border-bottom:none}
+.worker-info{display:flex;align-items:center;gap:8px}
+.worker-inputs{display:flex;align-items:center;gap:6px}
+.worker-inputs input[type=number]{width:52px;text-align:center}
+.worker-inputs input[type=checkbox]{width:auto}
+.tarea-pendiente{background:var(--goldl);border:1px solid var(--gold);border-radius:var(--radius-lg);padding:14px;margin-bottom:10px;cursor:pointer;transition:all .2s}
+.tarea-pendiente:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.1)}
+.tarea-confirmada{background:var(--gl);border:1px solid var(--g);border-radius:var(--radius-lg);padding:14px;margin-bottom:10px}
+.inc-item{border:1px solid var(--border);border-radius:var(--radius);padding:9px 12px;margin-bottom:7px;border-left:3px solid #EF9F27}
+
+/* VALIDACION GERENTE */
+.valid-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);padding:12px 14px;margin-bottom:10px;border-left:3px solid var(--gold)}
+
+/* FERMAGE */
+.fermage-badge{background:#E8F5E9;color:#2E7D32;border:1px solid #A5D6A7}
+
+@media(max-width:768px){
+  .sidebar{transform:translateX(-210px)}.sidebar.open{transform:translateX(0)}
+  .main{margin-left:0!important}.menu-btn{display:block!important}
+  .g4{grid-template-columns:1fr 1fr!important}.g3{grid-template-columns:1fr!important}
+  .g2{grid-template-columns:1fr!important}.kanban{grid-template-columns:1fr 1fr!important}
+  .fr2,.fr3{grid-template-columns:1fr!important}.content{padding:11px 13px!important}
+  .drag-area{flex-direction:column}
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-page" class="login-page">
+  <div class="login-box">
+    <div class="login-logo"><img src="https://i.postimg.cc/bvDHmp47/WhatsApp-Image-2026-05-14-at-17-24-20-(6).jpg" alt="Basso" onerror="this.style.display='none'"></div>
+    <div class="login-title">Basso Services Viticoles</div>
+    <div class="login-sub">Accede con tu usuario y contraseña</div>
+    <div id="login-err" class="login-err">Usuario o contraseña incorrectos</div>
+    <div class="fg"><label class="fl">Usuario</label><input type="text" id="l-user" placeholder="ej: marc" autocomplete="username" style="width:100%"></div>
+    <div class="fg"><label class="fl">Contraseña</label><input type="password" id="l-pass" placeholder="••••••••" autocomplete="current-password" style="width:100%"></div>
+    <button class="btn btn-g" style="width:100%;margin-top:6px;padding:10px;font-size:14px;justify-content:center" id="login-btn" onclick="doLogin()"><i class="ti ti-login"></i> Entrar</button>
+  </div>
+</div>
+
+<!-- JEFE APP (interfaz simplificada) -->
+<div id="jefe-page" style="display:none">
+  <div class="jefe-app">
+    <div class="jefe-topbar">
+      <div style="display:flex;align-items:center;gap:10px">
+        <img src="https://i.postimg.cc/bvDHmp47/WhatsApp-Image-2026-05-14-at-17-24-20-(6).jpg" style="width:36px;height:36px;border-radius:50%;object-fit:contain;border:1.5px solid var(--gold)">
+        <div>
+          <h1 id="jefe-nombre">—</h1>
+          <div style="font-size:11px;color:rgba(255,255,255,.7)" id="jefe-fecha">—</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:6px">
+        <button class="btn btn-sm" style="background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.2);color:#fff" onclick="jefeTab('tareas')" id="jbtn-tareas">Mis tareas</button>
+        <button class="btn btn-sm" style="background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.2);color:#fff" onclick="jefeTab('incidencias')" id="jbtn-inc">Incidencias</button>
+        <button class="btn btn-sm btn-r" onclick="doLogout()"><i class="ti ti-logout"></i></button>
+      </div>
+    </div>
+    <div class="jefe-content" id="jefe-content"></div>
+  </div>
+</div>
+
+<!-- GERENTE APP -->
+<div id="app-page" style="display:none">
+<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+<div class="app">
+<div class="sidebar" id="sidebar">
+  <div class="logo-area">
+    <img src="https://i.postimg.cc/bvDHmp47/WhatsApp-Image-2026-05-14-at-17-24-20-(6).jpg" alt="Basso" onerror="this.style.display='none'">
+    <p><span class="sync-dot loading" id="sync-dot"></span><span id="sync-txt">Conectando...</span></p>
+  </div>
+  <div class="user-badge"><i class="ti ti-user-circle"></i><span id="user-name-badge">—</span><span class="badge bgold" style="margin-left:auto;font-size:9px">Gerente</span></div>
+  <span class="nav-sec">Principal</span>
+  <div class="nav-item active" onclick="go('dashboard',this)"><i class="ti ti-chart-bar"></i> Dashboard</div>
+  <div class="nav-item" onclick="go('mistareas',this)"><i class="ti ti-clipboard-list"></i> Mis tareas <span id="mis-tareas-count" style="background:#E24B4A;color:#fff;border-radius:20px;padding:1px 6px;font-size:9px;font-weight:700;margin-left:auto;display:none">0</span></div>
+  <div class="nav-item" id="nav-validar" onclick="go('validar',this)"><i class="ti ti-clipboard-check"></i> Pend. confirmar <span id="validar-count" style="background:#E24B4A;color:#fff;border-radius:20px;padding:1px 6px;font-size:9px;font-weight:700;margin-left:auto;display:none">0</span></div>
+  <div class="nav-item" onclick="go('bitacora',this)"><i class="ti ti-notebook"></i> Bitácora</div>
+  <div class="nav-item" onclick="go('kanban',this)"><i class="ti ti-layout-kanban"></i> Planificación</div>
+  <div class="nav-item" onclick="go('calendario',this)"><i class="ti ti-calendar"></i> Calendario</div>
+  <span class="nav-sec">Empresa</span>
+  <div class="nav-item" onclick="go('clientes',this)"><i class="ti ti-building"></i> CRM Clientes</div>
+  <div class="nav-item" onclick="go('fermages',this)"><i class="ti ti-plant"></i> Fermages</div>
+  <div class="nav-item" onclick="go('trabajadores',this)"><i class="ti ti-users"></i> Personal</div>
+  <div class="nav-item" onclick="go('horas',this)"><i class="ti ti-clock"></i> Control horas</div>
+  <span class="nav-sec">Finanzas</span>
+  <div class="nav-item" onclick="go('tarifas',this)"><i class="ti ti-receipt"></i> Tarifas</div>
+  <div class="nav-item" onclick="go('facturacion',this)"><i class="ti ti-file-invoice"></i> Facturación</div>
+  <div class="nav-item" onclick="go('rentabilidad',this)"><i class="ti ti-trending-up"></i> Rentabilidad</div>
+  <div class="nav-item" onclick="go('incidencias',this)"><i class="ti ti-alert-triangle"></i> Incidencias</div>
+  <div class="nav-logout"><button class="btn" style="width:100%;color:rgba(255,255,255,.8);border-color:rgba(255,255,255,.2);background:transparent;justify-content:center" onclick="doLogout()"><i class="ti ti-logout"></i> Cerrar sesión</button></div>
+</div>
+<div class="main" id="main">
+  <div class="topbar">
+    <div class="topbar-left"><button class="menu-btn" onclick="toggleSidebar()"><i class="ti ti-menu-2"></i></button><h2 id="page-title">Dashboard</h2></div>
+    <div class="tbar-r" id="topbar-actions"></div>
+  </div>
+  <div class="content" id="content"><div class="empty"><div class="spinner"></div><div style="margin-top:10px">Cargando...</div></div></div>
+</div>
+</div>
+</div>
+<div id="modal-container"></div>
+
+<script>
+const SB='https://yopdehtfbfjdaocnbmgo.supabase.co';
+const SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlvcGRlaHRmYmZqZGFvY25ibWdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0MDI5NDcsImV4cCI6MjA5Nzk3ODk0N30.yoMs_TaBFcJWvjSAzzr11gson31iwUXNO-UCCpdo1c8';
+const SH={'apikey':SK,'Authorization':'Bearer '+SK,'Content-Type':'application/json','Prefer':'return=representation'};
+const COSTE=15;
+
+async function sbGet(t,p=''){const r=await fetch(`${SB}/rest/v1/${t}?${p}`,{headers:SH});if(!r.ok)throw new Error(await r.text());return r.json();}
+async function sbPost(t,b){const r=await fetch(`${SB}/rest/v1/${t}`,{method:'POST',headers:SH,body:JSON.stringify(b)});if(!r.ok)throw new Error(await r.text());return r.json();}
+async function sbPatch(t,id,b){const r=await fetch(`${SB}/rest/v1/${t}?id=eq.${id}`,{method:'PATCH',headers:SH,body:JSON.stringify(b)});if(!r.ok)throw new Error(await r.text());return r.json();}
+async function sbDelete(t,id){const r=await fetch(`${SB}/rest/v1/${t}?id=eq.${id}`,{method:'DELETE',headers:SH});if(!r.ok)throw new Error(await r.text());}
+async function sbUpsert(t,b,oc){const r=await fetch(`${SB}/rest/v1/${t}?on_conflict=${oc}`,{method:'POST',headers:{...SH,'Prefer':'resolution=merge-duplicates,return=representation'},body:JSON.stringify(b)});if(!r.ok)throw new Error(await r.text());return r.json();}
+
+let DB={clientes:[],trabajadores:[],servicios:[],bitacora:[],kanban:[],incidencias:[],usuarios:[],horas:[],fermages:[]};
+let currentUser=null;
+let currentPage='dashboard';
+
+// ─── LOGIN ───
+async function doLogin(){
+  const btn=document.getElementById('login-btn');
+  btn.disabled=true;btn.innerHTML='<div class="spinner"></div> Entrando...';
+  const u=document.getElementById('l-user').value.trim().toLowerCase();
+  const p=document.getElementById('l-pass').value;
+  document.getElementById('login-err').style.display='none';
+  try{
+    const res=await sbGet('usuarios','select=*&activo=eq.true&usuario=ilike.'+encodeURIComponent(u));
+    if(!res||!res.length||res[0].password_hash!==p){
+      document.getElementById('login-err').style.display='block';
+      btn.disabled=false;btn.innerHTML='<i class="ti ti-login"></i> Entrar';return;
+    }
+    currentUser=res[0];
+    document.getElementById('login-page').style.display='none';
+    if(currentUser.rol==='gerente'){
+      document.getElementById('app-page').style.display='block';
+      document.getElementById('user-name-badge').textContent=currentUser.nombre;
+      await loadAll();
+    } else {
+      // Jefe de equipo — interfaz simplificada
+      document.getElementById('jefe-page').style.display='block';
+      document.getElementById('jefe-nombre').textContent='Hola, '+currentUser.nombre+' 👋';
+      document.getElementById('jefe-fecha').textContent=new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
+      await loadAll();
+      jefeTab('tareas');
+      actualizarContadorJefe();
+    }
+  }catch(e){
+    document.getElementById('login-err').textContent='Error: '+e.message;
+    document.getElementById('login-err').style.display='block';
+    btn.disabled=false;btn.innerHTML='<i class="ti ti-login"></i> Entrar';
+  }
+}
+
+function doLogout(){
+  currentUser=null;
+  document.getElementById('login-page').style.display='flex';
+  document.getElementById('app-page').style.display='none';
+  document.getElementById('jefe-page').style.display='none';
+  document.getElementById('l-pass').value='';
+  const btn=document.getElementById('login-btn');
+  btn.disabled=false;btn.innerHTML='<i class="ti ti-login"></i> Entrar';
+}
+
+document.getElementById('l-pass').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
+document.getElementById('l-user').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('l-pass').focus();});
+
+// PWA Service Worker
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('sw.js')
+      .then(()=>console.log('SW registrado'))
+      .catch(()=>console.log('SW no disponible'));
+  });
+}
+
+// ─── LOAD DATA ───
+async function loadAll(){
+  setSyncState('loading');
+  try{
+    const[cl,tr,sc,bi,ka,inc,us,hr]=await Promise.all([
+      sbGet('clientes','order=id'),sbGet('trabajadores','order=id'),
+      sbGet('servicios_cliente','order=cid,servicio'),sbGet('bitacora','order=fecha.desc,id.desc'),
+      sbGet('kanban','order=id'),sbGet('incidencias','order=fecha.desc,id.desc'),
+      sbGet('usuarios','order=id'),sbGet('horas_diarias','order=fecha.asc')
+    ]);
+    DB={clientes:cl,trabajadores:tr,servicios:sc,bitacora:bi,kanban:ka,incidencias:inc,usuarios:us,horas:hr,fermages:[]};
+    setSyncState('ok');
+    if(currentUser.rol==='gerente') render(currentPage);
+    actualizarContadorValidar();
+  }catch(e){setSyncState('err');}
+}
+
+function actualizarContadorValidar(){
+  const n=DB.kanban.filter(k=>k.confirmado_jefe&&!k.validado_gerente).length;
+  const el=document.getElementById('validar-count');
+  if(el){el.textContent=n;el.style.display=n>0?'inline':'none';}
+  // También actualizar contador de mis tareas
+  const nombre=currentUser?currentUser.nombre.trim().toLowerCase():'';
+  const mt=DB.kanban.filter(k=>{
+    if(k.columna==='terminado'||k.validado_gerente) return false;
+    const esJefe=(k.jefe||'').trim().toLowerCase()===nombre;
+    const tids=JSON.parse(k.trabajadores_ids||'[]');
+    const esTrab=tids.some(t=>(t||'').trim().toLowerCase()===nombre);
+    return esJefe||esTrab;
+  }).length;
+  const mc=document.getElementById('mis-tareas-count');
+  if(mc){mc.textContent=mt;mc.style.display=mt>0?'inline':'none';}
+}
+
+function rMisTareas(c,pt,tb){
+  pt.textContent='Mis tareas';
+  const nombre=currentUser.nombre.trim().toLowerCase();
+  const hoy=today();
+
+  // ESTRICTO: solo tareas donde SOY el jefe O estoy en trabajadores_ids
+  // Y que sean de hoy en adelante, no terminadas, no validadas, no confirmadas
+  const misTareas=DB.kanban.filter(k=>{
+    if(k.columna==='terminado') return false;
+    if(k.validado_gerente) return false;
+    if(k.confirmado_jefe) return false;
+    const fecha=k.fecha_prevista||'9999';
+    if(fecha < hoy) return false;
+    const esJefe=(k.jefe||'').trim().toLowerCase()===nombre;
+    const tids=JSON.parse(k.trabajadores_ids||'[]');
+    const esTrab=tids.some(t=>(t||'').trim().toLowerCase()===nombre);
+    return esJefe||esTrab;
+  });
+
+  let html='';
+
+  if(!misTareas.length){
+    html='<div class="card"><div class="empty" style="padding:40px 20px">'
+      +'<i class="ti ti-sun" style="font-size:40px;color:var(--gold);display:block;margin-bottom:10px"></i>'
+      +'No tienes tareas asignadas.'
+    +'</div></div>';
+    if(c)c.innerHTML=html;
+    return html;
+  }
+
+  misTareas.forEach(k=>{
+    const esJefe=(k.jefe||'').trim().toLowerCase()===nombre;
+    const tids=JSON.parse(k.trabajadores_ids||'[]');
+    const nW=[k.jefe,...tids].filter(Boolean).length;
+    html+='<div class="card" style="border-left:4px solid var(--g);margin-bottom:12px">'
+      +'<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">'
+        +'<div>'
+          +'<div style="font-weight:700;font-size:15px;margin-bottom:4px">'+k.titulo+'</div>'
+          +'<div style="font-size:12px;color:var(--text2)">'+(getCl(k.cid).nombre||'--')+' · '+(k.servicio||'--')+'</div>'
+          +'<div style="font-size:11px;color:var(--text2);margin-top:4px">'
+            +'<i class="ti ti-calendar" style="font-size:10px"></i> '+(k.fecha_prevista||'Sin fecha')
+            +' &nbsp;·&nbsp; '+nW+' trabajadores'
+          +'</div>'
+        +'</div>'
+        +(esJefe
+          ?'<span class="badge bg">Jefe del día</span>'
+          :'<span class="badge bb">En el equipo</span>')
+      +'</div>'
+      +'<button class="btn btn-g" style="width:100%;justify-content:center;padding:10px" onclick="abrirFicha('+k.id+')">'
+        +'<i class="ti ti-clipboard-check"></i> Fichar jornada'
+      +'</button>'
+    +'</div>';
+  });
+
+  if(c)c.innerHTML=html;
+  return html;
+}
+
+function setSyncState(s){const d=document.getElementById('sync-dot');const t=document.getElementById('sync-txt');if(!d)return;d.className='sync-dot '+s;t.textContent=s==='ok'?'En línea':s==='err'?'Sin conexión':'Sincronizando...';}
+
+// ─── JEFE INTERFACE ───
+async function jefeTab(tab){
+  ['tareas','inc'].forEach(t=>{
+    const b=document.getElementById('jbtn-'+t);
+    if(b)b.style.background=t===tab?'rgba(255,255,255,.35)':'rgba(255,255,255,.15)';
+  });
+  if(tab==='tareas'){
+    // Usar la misma función rMisTareas pero renderizar en jefe-content
+    const fakeC={innerHTML:''};
+    const fakePt={textContent:''};
+    const fakeTb={innerHTML:''};
+    rMisTareas(fakeC,fakePt,fakeTb);
+    document.getElementById('jefe-content').innerHTML=fakeC.innerHTML;
+    actualizarContadorJefe();
+  } else {
+    renderJefeInc();
+  }
+}
+
+function actualizarContadorJefe(){
+  const nombre=currentUser?currentUser.nombre.trim().toLowerCase():'';
+  const pendientes=DB.kanban.filter(k=>{
+    if(k.columna==='terminado'||k.validado_gerente) return false;
+    const esJefe=(k.jefe||'').trim().toLowerCase()===nombre;
+    const tids=JSON.parse(k.trabajadores_ids||'[]');
+    const esTrab=tids.some(t=>(t||'').trim().toLowerCase()===nombre);
+    return (esJefe||esTrab)&&!k.confirmado_jefe;
+  }).length;
+  const btn=document.getElementById('jbtn-tareas');
+  if(btn){
+    btn.innerHTML=pendientes>0
+      ?'Mis tareas <span style="background:#E24B4A;color:#fff;border-radius:20px;padding:1px 6px;font-size:10px;font-weight:700;margin-left:4px">'+pendientes+'</span>'
+      :'Mis tareas <span style="background:#4ade80;color:#fff;border-radius:20px;padding:1px 6px;font-size:10px;font-weight:700;margin-left:4px">✓</span>';
+  }
+}
+
+function renderJefeTareas(){
+  const nombre=currentUser.nombre.trim().toLowerCase();
+  // Mostrar TODAS las tareas asignadas excepto terminado
+  const misTareas=DB.kanban.filter(k=>{
+    if(k.columna==='terminado') return false;
+    const esJefe=(k.jefe||'').trim().toLowerCase()===nombre;
+    const tids=JSON.parse(k.trabajadores_ids||'[]');
+    const esTrabajador=tids.some(t=>(t||'').trim().toLowerCase()===nombre);
+    return esJefe||esTrabajador;
+  });
+
+  const pendientes=misTareas.filter(k=>!k.confirmado_jefe);
+  const yaConfirmadas=misTareas.filter(k=>k.confirmado_jefe&&!k.validado_gerente);
+  const validadas=DB.kanban.filter(k=>{
+    const esJefe=(k.jefe||'').trim().toLowerCase()===nombre;
+    const tids=JSON.parse(k.trabajadores_ids||'[]');
+    const esTrabajador=tids.some(t=>(t||'').trim().toLowerCase()===nombre);
+    return (esJefe||esTrabajador)&&k.validado_gerente&&k.columna==='terminado';
+  }).slice(0,3);
+
+  let html='';
+
+  // DEBUG — mostrar info útil siempre
+  const totalKanban=DB.kanban.length;
+  const noTerminadas=DB.kanban.filter(k=>k.columna!=='terminado').length;
+  html+=`<div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:8px 12px;margin-bottom:10px;font-size:11px;color:var(--text2)">
+    <div style="font-weight:600;color:var(--text);margin-bottom:4px">👤 Sesión: ${currentUser.nombre}</div>
+    <div>Buscando como: <code style="background:var(--bg3);padding:1px 4px;border-radius:3px">${nombre}</code></div>
+    <div>Total tareas en BD: ${totalKanban} | Sin terminar: ${noTerminadas} | Mis tareas: ${misTareas.length}</div>
+    ${DB.kanban.filter(k=>k.columna!=='terminado').map(k=>`<div style="margin-top:3px;color:${misTareas.includes(k)?'#4ade80':'var(--r)'}">
+      ${misTareas.includes(k)?'✅':'❌'} "${k.titulo}" | jefe: <strong>"${k.jefe}"</strong> | col: ${k.columna}
+    </div>`).join('')}
+  </div>`;
+
+  if(!misTareas.length&&!validadas.length){
+    html+='<div class="card"><div class="empty"><i class="ti ti-sun" style="font-size:30px;color:var(--gold);display:block;margin-bottom:7px"></i>No tienes tareas asignadas.</div></div>';
+  }
+
+  if(pendientes.length){
+    html+=`<div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px;text-transform:uppercase;letter-spacing:.06em">📋 Mis tareas (${pendientes.length})</div>`;
+    pendientes.forEach(k=>{
+      const tids=JSON.parse(k.trabajadores_ids||'[]');
+      const allW=[k.jefe,...tids].filter((v,i,a)=>v&&a.indexOf(v)===i);
+      const dbW=DB.trabajadores.filter(t=>allW.some(n=>(n||'').toLowerCase()===(t.nombre||'').toLowerCase()));
+      const colColors={pendiente:'#888780',porhacer:'var(--b)',urgente:'#E24B4A',encurso:'#BA7517'};
+      const colLabels={pendiente:'Pendiente',porhacer:'Por hacer',urgente:'🔴 Urgente',encurso:'En curso'};
+      const colColor=colColors[k.columna]||'#888';
+      const colLabel=colLabels[k.columna]||k.columna;
+      html+=`<div class="tarea-pendiente" onclick="abrirFicha(${k.id})" style="border-left:4px solid ${colColor}">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div>
+            <div style="font-weight:700;font-size:14px;margin-bottom:4px">${k.titulo}</div>
+            <div style="font-size:12px;color:var(--text2)">${getCl(k.cid).nombre||'—'} · ${k.servicio||'—'}</div>
+            <div style="font-size:11px;color:var(--text2);margin-top:2px"><i class="ti ti-calendar" style="font-size:10px"></i> ${k.fecha_prevista||'Sin fecha'} · <i class="ti ti-users" style="font-size:10px"></i> ${dbW.length} trabajadores</div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+            <span style="font-size:10px;font-weight:600;color:${colColor}">${colLabel}</span>
+            <span class="badge ba">Confirmar →</span>
+          </div>
+        </div>
+      </div>`;
+    });
+  }
+
+  if(yaConfirmadas.length){
+    html+=`<div style="font-size:12px;font-weight:600;color:var(--text2);margin:12px 0 8px;text-transform:uppercase;letter-spacing:.06em">✓ Confirmadas — pendientes de validación</div>`;
+    yaConfirmadas.forEach(k=>{
+      html+=`<div class="tarea-confirmada">
+        <div style="font-weight:600;font-size:13px">${k.titulo}</div>
+        <div style="font-size:12px;color:var(--text2);margin-top:3px">${getCl(k.cid).nombre||'—'} · Confirmada por ti · Esperando validación del gerente</div>
+      </div>`;
+    });
+  }
+
+  if(validadas.length){
+    html+=`<div style="font-size:12px;font-weight:600;color:var(--g);margin:12px 0 8px;text-transform:uppercase;letter-spacing:.06em">✅ Validadas por el gerente</div>`;
+    validadas.forEach(k=>{
+      html+=`<div class="tarea-confirmada" style="background:var(--gl);border-color:var(--g)">
+        <div style="font-weight:600;font-size:13px">${k.titulo}</div>
+        <div style="font-size:12px;color:var(--gd);margin-top:3px">✅ Validada y registrada en bitácora</div>
+      </div>`;
+    });
+  }
+
+  document.getElementById('jefe-content').innerHTML=html;
+  actualizarContadorJefe();
+}
+
+function abrirFicha(kid){
+  const k=DB.kanban.find(x=>x.id===kid);if(!k)return;
+  const tids=JSON.parse(k.trabajadores_ids||'[]');
+  const allW=[k.jefe,...tids].filter((v,i,a)=>v&&a.findIndex(x=>(x||'').toLowerCase()===(v||'').toLowerCase())===i);
+  const dbW=DB.trabajadores.filter(t=>allW.some(n=>(n||'').trim().toLowerCase()===(t.nombre||'').trim().toLowerCase()));
+  const fecha=k.fecha_prevista||today();
+  const modalidad=k.modalidad||'horas';
+  const modOpts=['horas','cepas','kg'].map(m=>`<option value="${m}" ${m===modalidad?'selected':''}>${{horas:'Por horas',cepas:'Por cepas',kg:'Por kg/t'}[m]}</option>`).join('');
+
+  // Detectar si algún trabajador ya tiene horas ese día en OTRA ficha
+  function getHorasOtraFicha(wid, wnombre){
+    const hr=DB.horas.find(h=>h.trabajador_id===wid&&h.fecha===fecha);
+    if(!hr)return null;
+    const hTotal=(hr.horas_normal||0)+(hr.horas_extra||0);
+    if(hTotal===0)return null;
+    return hTotal;
+  }
+
+  const workersHTML=dbW.map(w=>{
+    const esJefe=w.nombre===k.jefe;
+    const horasOtro=getHorasOtraFicha(w.id, w.nombre);
+    const horasDisp=horasOtro!=null?Math.max(0,7-horasOtro):7;
+    const alert=horasOtro!=null
+      ?`<div style="font-size:9px;color:var(--gold);margin-top:2px">⚠️ Ya tiene ${horasOtro}h en otra ficha hoy. Máx. disponible: ${horasDisp}h</div>`
+      :'';
+    return`<div class="worker-row" style="flex-direction:column;align-items:flex-start;gap:6px;padding:10px 0;border-bottom:1px solid var(--border)">
+      <div style="display:flex;align-items:center;justify-content:space-between;width:100%">
+        <div style="display:flex;align-items:center;gap:8px">
+          <div class="av">${w.nombre.split(' ').map(n=>n[0]).join('')}</div>
+          <div>
+            <div style="font-weight:500;font-size:13px">${w.nombre}${esJefe?` <span class="badge bg" style="font-size:9px">Jefe</span>`:''}</div>
+            <div style="font-size:10px;color:var(--text2)">${w.tipo}</div>
+            ${alert}
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px">
+          <div style="text-align:center">
+            <div style="font-size:9px;color:var(--text2)">H. este tramo</div>
+            <input type="number" id="h-${kid}-${w.id}" value="${horasDisp}" min="0" max="16" step="0.5" style="width:52px;text-align:center">
+          </div>
+          <div style="text-align:center">
+            <div style="font-size:9px;color:var(--gold)">H. extra</div>
+            <input type="number" id="he-${kid}-${w.id}" value="0" min="0" max="8" step="0.5" style="width:45px;text-align:center">
+          </div>
+          <div style="text-align:center">
+            <div style="font-size:9px;color:var(--r)">Aus.</div>
+            <input type="checkbox" id="aus-${kid}-${w.id}" style="width:auto;margin-top:6px">
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Selector de trabajadores prestados de otras fichas
+  const otrosTrabajadores=DB.trabajadores.filter(t=>
+    t.activo && !dbW.some(w=>w.id===t.id)
+  );
+  const prestadosOpts=otrosTrabajadores.map(t=>`<option value="${t.id}">${t.nombre}</option>`).join('');
+
+  showModal(`<div class="modal-t">
+    <div><div style="font-weight:700">${k.titulo}</div><div style="font-size:11px;color:var(--text2);font-weight:400">${getCl(k.cid).nombre||'—'} · ${fecha}</div></div>
+    <span onclick="closeModal()" style="cursor:pointer;color:var(--text3)"><i class="ti ti-x"></i></span>
+  </div>
+
+  <div class="alert al-gold"><i class="ti ti-clipboard-list"></i> Confirma la jornada. Si un trabajador vino de otra ficha, añádelo abajo como "prestado".</div>
+
+  <div class="fg"><label class="fl">Modalidad de trabajo</label><select id="mod-${kid}" onchange="togModFicha(${kid})">${modOpts}</select></div>
+
+  <div id="mod-cepas-${kid}" class="${modalidad!=='cepas'?'hidden':''}">
+    <div class="fr2">
+      <div class="fg"><label class="fl">Cepas realizadas</label><input type="number" id="cepas-${kid}" placeholder="ej: 1200"></div>
+      <div class="fg"><label class="fl">Objetivo</label><input type="number" id="obj-${kid}" placeholder="ej: 1000"></div>
+    </div>
+  </div>
+  <div id="mod-kg-${kid}" class="${modalidad!=='kg'?'hidden':''}">
+    <div class="fr2">
+      <div class="fg"><label class="fl">Cantidad</label><input type="number" id="kg-${kid}" placeholder="ej: 4500"></div>
+      <div class="fg"><label class="fl">Unidad</label><select id="kgu-${kid}"><option value="kg">Kg</option><option value="t">Toneladas</option></select></div>
+    </div>
+  </div>
+
+  <div style="font-weight:600;font-size:13px;margin:12px 0 8px;display:flex;align-items:center;gap:6px">
+    <i class="ti ti-users" style="color:var(--g)"></i> Equipo asignado
+  </div>
+  <div style="background:var(--bg2);border-radius:var(--radius);padding:4px 10px">${workersHTML}</div>
+
+  <!-- TRABAJADORES PRESTADOS -->
+  <div style="margin-top:12px;background:var(--goldl);border:1px solid var(--gold);border-radius:var(--radius);padding:10px 12px">
+    <div style="font-weight:600;font-size:12px;margin-bottom:8px;display:flex;align-items:center;gap:6px">
+      <i class="ti ti-transfer" style="color:var(--gold)"></i> ¿Trabajador prestado de otra ficha?
+    </div>
+    <div style="font-size:11px;color:var(--text2);margin-bottom:8px">Si alguien terminó antes en otra propiedad y vino a trabajar aquí, añádelo aquí con sus horas de este tramo.</div>
+    <div id="prestados-list-${kid}"></div>
+    <div class="fr2" style="margin-top:6px">
+      <select id="prestado-sel-${kid}" style="font-size:12px">${prestadosOpts}</select>
+      <button class="btn btn-sm btn-gold" onclick="addPrestado(${kid})"><i class="ti ti-plus"></i> Añadir</button>
+    </div>
+  </div>
+
+  <div class="fg" style="margin-top:10px"><label class="fl">Observaciones de la jornada</label><textarea id="obs-${kid}" rows="2" placeholder="Condiciones, incidencias, observaciones..."></textarea></div>
+
+  <button class="btn btn-g btn-lg" style="margin-top:12px" onclick="confirmarFichaJefe(${kid})">
+    <i class="ti ti-check"></i> CONFIRMAR TAREA
+  </button>`);
+}
+
+function addPrestado(kid){
+  const sel=document.getElementById('prestado-sel-'+kid);
+  if(!sel||!sel.value)return;
+  const wid=parseInt(sel.value);
+  const w=DB.trabajadores.find(t=>t.id===wid);if(!w)return;
+  const list=document.getElementById('prestados-list-'+kid);
+
+  // Evitar duplicados
+  if(document.getElementById('hp-'+kid+'-'+wid))return;
+
+  const fecha=DB.kanban.find(x=>x.id===kid)?.fecha_prevista||today();
+  const hr=DB.horas.find(h=>h.trabajador_id===wid&&h.fecha===fecha);
+  const hTotal=hr?(hr.horas_normal||0)+(hr.horas_extra||0):0;
+  const horasDisp=Math.max(0,7-hTotal);
+
+  const div=document.createElement('div');
+  div.id='prestado-row-'+kid+'-'+wid;
+  div.style.cssText='display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border)';
+  div.innerHTML=`<div class="av">${w.nombre.split(' ').map(n=>n[0]).join('')}</div>
+    <div style="flex:1">
+      <div style="font-weight:500;font-size:12px">${w.nombre} <span class="badge bgold" style="font-size:9px">Prestado</span></div>
+      ${hTotal>0?`<div style="font-size:10px;color:var(--gold)">Ya tiene ${hTotal}h hoy. Disponible: ${horasDisp}h</div>`:''}
+    </div>
+    <div style="text-align:center">
+      <div style="font-size:9px;color:var(--text2)">H. este tramo</div>
+      <input type="number" id="hp-${kid}-${wid}" value="${horasDisp}" min="0.5" max="16" step="0.5" style="width:52px;text-align:center">
+    </div>
+    <button class="btn btn-sm btn-r" onclick="document.getElementById('prestado-row-${kid}-${wid}').remove()"><i class="ti ti-x"></i></button>`;
+  list.appendChild(div);
+
+  // Eliminar del selector
+  sel.querySelector(`option[value="${wid}"]`)?.remove();
+}
+
+function togModFicha(kid){
+  const v=document.getElementById('mod-'+kid).value;
+  document.getElementById('mod-cepas-'+kid).classList.toggle('hidden',v!=='cepas');
+  document.getElementById('mod-kg-'+kid).classList.toggle('hidden',v!=='kg');
+}
+async function confirmarFichaJefe(kid){
+  const k=DB.kanban.find(x=>x.id===kid);if(!k)return;
+  const tids=JSON.parse(k.trabajadores_ids||'[]');
+  const allW=[k.jefe,...tids].filter((v,i,a)=>v&&a.findIndex(x=>(x||'').toLowerCase()===(v||'').toLowerCase())===i);
+  const dbW=DB.trabajadores.filter(t=>allW.some(n=>(n||'').toLowerCase()===(t.nombre||'').toLowerCase()));
+  const btn=document.querySelector('#modal-container .btn-g');
+  if(btn){btn.disabled=true;btn.innerHTML='<div class="spinner"></div> Guardando...';}
+
+  const fecha=k.fecha_prevista||today();
+  let totalH=0;
+  const horasData=[];
+
+  // Trabajadores del equipo asignado
+  for(const w of dbW){
+    const aus=document.getElementById('aus-'+kid+'-'+w.id)?.checked||false;
+    const h=aus?0:parseFloat(document.getElementById('h-'+kid+'-'+w.id)?.value)||0;
+    const he=aus?0:parseFloat(document.getElementById('he-'+kid+'-'+w.id)?.value)||0;
+    totalH+=h+he;
+    horasData.push({trabajador_id:w.id,nombre:w.nombre,h,he,aus,prestado:false});
+    // SUMA sobre horas existentes del día (por si ya tenía horas en otra ficha)
+    const hrExist=DB.horas.find(x=>x.trabajador_id===w.id&&x.fecha===fecha);
+    const hPrev=hrExist&&!aus?(hrExist.horas_normal||0):0;
+    const hePrev=hrExist&&!aus?(hrExist.horas_extra||0):0;
+    try{await sbUpsert('horas_diarias',{
+      trabajador_id:w.id,fecha,
+      horas_normal:hPrev+h,
+      horas_extra:hePrev+he,
+      ausente:aus
+    },'trabajador_id,fecha');}catch(e){}
+  }
+
+  // Trabajadores PRESTADOS de otras fichas
+  const prestadosRows=document.querySelectorAll(`[id^="prestado-row-${kid}-"]`);
+  for(const row of prestadosRows){
+    const wid=parseInt(row.id.split('-').pop());
+    const w=DB.trabajadores.find(t=>t.id===wid);if(!w)continue;
+    const hp=parseFloat(document.getElementById('hp-'+kid+'-'+wid)?.value)||0;
+    if(hp<=0)continue;
+    totalH+=hp;
+    horasData.push({trabajador_id:w.id,nombre:w.nombre,h:hp,he:0,aus:false,prestado:true});
+    // SUMA sobre horas existentes (tiene horas de otra ficha)
+    const hrExist=DB.horas.find(x=>x.trabajador_id===wid&&x.fecha===fecha);
+    const hPrev=hrExist?(hrExist.horas_normal||0):0;
+    const hePrev=hrExist?(hrExist.horas_extra||0):0;
+    try{await sbUpsert('horas_diarias',{
+      trabajador_id:wid,fecha,
+      horas_normal:hPrev+hp,
+      horas_extra:hePrev,
+      ausente:false
+    },'trabajador_id,fecha');}catch(e){}
+  }
+
+  const mod=document.getElementById('mod-'+kid)?.value||'horas';
+  const nwTotal=dbW.length+prestadosRows.length;
+  const confirmData={
+    modalidad:mod,
+    horas_total:totalH,
+    nw:nwTotal,
+    cepas:parseInt(document.getElementById('cepas-'+kid)?.value)||0,
+    kg:parseFloat(document.getElementById('kg-'+kid)?.value)||0,
+    unidad:document.getElementById('kgu-'+kid)?.value||'kg',
+    obs:document.getElementById('obs-'+kid)?.value||'',
+    horas_equipo:JSON.stringify(horasData)
+  };
+
+  try{
+    await sbPatch('kanban',kid,{
+      confirmado_jefe:true,
+      confirmado_por:currentUser.nombre,
+      confirm_data:JSON.stringify(confirmData),
+      columna:'encurso'
+    });
+    await loadAll();
+    closeModal();
+    alert('✓ Tarea confirmada. El gerente recibirá la validación.');
+    jefeTab('tareas');
+  }catch(e){alert('Error: '+e.message);}
+}
+
+function renderJefeInc(){
+  const misInc=DB.incidencias.filter(i=>i.reportado_por===currentUser.nombre);
+  let html=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+    <div style="font-size:13px;font-weight:600">Mis incidencias</div>
+    <button class="btn btn-sm btn-g" onclick="openIncJefe()"><i class="ti ti-plus"></i> Nueva</button>
+  </div>`;
+  if(!misInc.length) html+=`<div class="card"><div class="empty">Sin incidencias reportadas</div></div>`;
+  else misInc.forEach(i=>{
+    html+=`<div class="inc-item"><div style="font-weight:600;font-size:13px">${i.tipo}</div>
+    <div style="font-size:12px;color:var(--text2);margin-top:2px">${i.fecha} · ${getCl(i.cid).nombre||'—'}</div>
+    <div style="font-size:12px;margin-top:4px">${i.descripcion||''}</div></div>`;
+  });
+  document.getElementById('jefe-content').innerHTML=html;
+}
+
+function openIncJefe(){
+  const clOpts=DB.clientes.map(c=>`<option value="${c.id}">${c.nombre}</option>`).join('');
+  showModal(`<div class="modal-t">Nueva incidencia <span onclick="closeModal()" style="cursor:pointer;color:var(--text3)"><i class="ti ti-x"></i></span></div>
+  <div class="fr2">
+    <div class="fg"><label class="fl">Fecha</label><input type="date" id="i-f" value="${today()}"></div>
+    <div class="fg"><label class="fl">Tipo</label><select id="i-t"><option>Clima adverso</option><option>Ausencia trabajador</option><option>Problema maquinaria</option><option>Accidente laboral</option><option>Problema con cliente</option><option>Retraso en trabajo</option><option>Otro</option></select></div>
+  </div>
+  <div class="fr2">
+    <div class="fg"><label class="fl">Propiedad</label><select id="i-c">${clOpts}</select></div>
+    <div class="fg"><label class="fl">Impacto €</label><input type="number" id="i-i" placeholder="ej: -450"></div>
+  </div>
+  <div class="fg"><label class="fl">Descripción</label><textarea id="i-d" rows="3"></textarea></div>
+  <button class="btn btn-g" style="width:100%;justify-content:center;margin-top:8px" onclick="saveIncJefe()"><i class="ti ti-check"></i> Guardar</button>`);
+}
+
+async function saveIncJefe(){
+  const body={fecha:document.getElementById('i-f').value,tipo:document.getElementById('i-t').value,cid:parseInt(document.getElementById('i-c').value),impacto:parseFloat(document.getElementById('i-i').value)||0,descripcion:document.getElementById('i-d').value,reportado_por:currentUser.nombre};
+  try{const res=await sbPost('incidencias',body);DB.incidencias.unshift(Array.isArray(res)?res[0]:res);closeModal();renderJefeInc();}
+  catch(e){alert('Error: '+e.message);}
+}
+
+// ─── GERENTE FUNCTIONS ───
+function go(page,el){currentPage=page;document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));if(el)el.classList.add('active');closeSidebar();render(page);}
+function toggleSidebar(){const s=document.getElementById('sidebar');const o=document.getElementById('overlay');s.classList.toggle('open');o.style.display=s.classList.contains('open')?'block':'none';}
+function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('overlay').style.display='none';}
+
+function render(page){
+  const c=document.getElementById('content'),tb=document.getElementById('topbar-actions'),pt=document.getElementById('page-title');
+  c.innerHTML='';tb.innerHTML='';
+  const pages={dashboard:rDash,mistareas:rMisTareas,validar:rValidar,bitacora:rBitacora,kanban:rKanban,calendario:rCalendario,clientes:rCRM,fermages:rFermages,trabajadores:rTrabajadores,horas:rHoras,tarifas:rTarifas,facturacion:rFacturacion,rentabilidad:rRentabilidad,incidencias:rIncidencias};
+  if(pages[page])pages[page](c,pt,tb);
+}
+
+const getCl=id=>DB.clientes.find(c=>c.id===id)||{nombre:'—',zona:'—'};
+const getTrab=id=>DB.trabajadores.find(t=>t.id===id)||{nombre:'—'};
+const getSvc=(cid,svc)=>DB.servicios.find(s=>s.cid===cid&&s.servicio===svc);
+const eur=n=>(Math.round(n||0)).toLocaleString('fr-FR')+' €';
+const pct=n=>Math.round(n||0)+'%';
+const today=()=>new Date().toISOString().slice(0,10);
+
+function calcI(b){
+  const s=getSvc(b.cid,b.servicio);if(!s)return 0;
+  if(b.modalidad==='horas')return(b.horas||0)*(s.precio_hora||0);
+  if(b.modalidad==='cepas')return(b.cepas||0)*(s.precio_cepa||0);
+  if(b.modalidad==='kg'&&b.unidad==='t')return(b.kg||0)*(s.precio_t||0);
+  if(b.modalidad==='kg')return(b.kg||0)*(s.precio_kg||0);
+  return 0;
+}
+function calcC(b){return(b.horas||0)*COSTE;}
+function calcM(b){const i=calcI(b);const c=calcC(b);return i>0?Math.round((i-c)/i*100):0;}
+function zBadge(z){if(z==='Saint-Émilion')return'<span class="badge bg">Saint-Émilion</span>';if(z==='Pomerol')return'<span class="badge bb">Pomerol</span>';return'<span class="badge ba">Fronsac</span>';}
+function tBadge(t){return{jefe:'<span class="badge bp">Jefe</span>',fijo:'<span class="badge bg">Fijo</span>',temporero:'<span class="badge bb">Temporero</span>',vendimia:'<span class="badge ba">Vendimia</span>'}[t]||'';}
+function mBadge(m){return{horas:'<span class="badge bb">Horas</span>',cepas:'<span class="badge bp">Cepas</span>',kg:'<span class="badge ba">Kg/t</span>'}[m]||'';}
+function mgBadge(m){return`<span class="badge ${m>=30?'bg':m>=20?'ba':'br'}">${m}%</span>`;}
+
+// ─── VALIDAR TAREAS (gerente) ───
+function rValidar(c,pt,tb){
+  pt.textContent='Pendiente de confirmar';
+  const pendientes=DB.kanban.filter(k=>k.confirmado_jefe&&!k.validado_gerente);
+  if(!pendientes.length){
+    c.innerHTML=`<div class="alert al-g"><i class="ti ti-check-circle"></i> No hay fichas pendientes.</div><div class="card"><div class="empty"><i class="ti ti-clipboard-check" style="font-size:32px;color:#4ade80;display:block;margin-bottom:8px"></i>Todas las fichas están validadas.</div></div>`;
+    return;
+  }
+  c.innerHTML=`<div class="alert al-gold"><i class="ti ti-bell"></i> <strong>${pendientes.length} ficha(s)</strong> esperan tu validación. Los datos NO aparecen en el Dashboard hasta que las valides.</div>`+
+  pendientes.map(k=>{
+    let data={};try{data=JSON.parse(k.confirm_data||'{}');}catch(e){}
+    const horasEq=JSON.parse(data.horas_equipo||'[]');
+    const tids=JSON.parse(k.trabajadores_ids||'[]');
+    const nW=tids.length+(k.jefe?1:0);
+    return`<div class="valid-card" id="vc-${k.id}">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
+        <div>
+          <div style="font-weight:700;font-size:15px;margin-bottom:4px">${k.titulo}</div>
+          <div style="font-size:12px;color:var(--text2)">${getCl(k.cid).nombre||'—'} · ${k.fecha_prevista||'—'}</div>
+          <div style="font-size:12px;color:var(--text2);margin-top:2px">Fichado por: <strong>${k.confirmado_por||'—'}</strong></div>
+        </div>
+        <span class="badge bgold">⏳ Pendiente validación</span>
+      </div>
+      <div class="g3" style="margin-bottom:12px">
+        <div class="mc"><div class="mc-l">Modalidad</div><div class="mc-v" style="font-size:13px">${{horas:'Por horas',cepas:'Por cepas',kg:'Por kg/t'}[data.modalidad||'horas']}</div></div>
+        <div class="mc"><div class="mc-l">Horas totales</div><div class="mc-v">${data.horas_total||0}h</div></div>
+        <div class="mc"><div class="mc-l">Trabajadores</div><div class="mc-v">${data.nw||nW}</div></div>
+        ${data.cepas>0?`<div class="mc"><div class="mc-l">Cepas</div><div class="mc-v">${data.cepas}</div></div>`:''}
+        ${data.kg>0?`<div class="mc"><div class="mc-l">Cantidad</div><div class="mc-v">${data.kg} ${data.unidad||'kg'}</div></div>`:''}
+      </div>
+      ${horasEq.length?`<div style="margin-bottom:12px">
+        <div style="font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">Horas por trabajador</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px">
+          ${horasEq.map(h=>`<div style="background:${h.aus?'var(--rl)':'var(--bg2)'};border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-size:12px">
+            <div style="font-weight:600;margin-bottom:2px">${h.nombre}</div>
+            ${h.aus?'<span style="color:var(--r)">Ausente</span>':`<span style="color:var(--g)">${h.h}h</span>${h.he>0?`<span style="color:var(--gold)"> +${h.he}h ext</span>`:''}`}
+          </div>`).join('')}
+        </div>
+      </div>`:''}
+      ${data.obs?`<div style="background:var(--bg2);border-radius:var(--radius);padding:8px 12px;margin-bottom:12px;font-size:13px;border-left:3px solid var(--gold)"><i class="ti ti-notes" style="color:var(--gold)"></i> ${data.obs}</div>`:''}
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-g" onclick="abrirFichaGerente(${k.id})"><i class="ti ti-edit"></i> Ver y editar ficha</button>
+        <button class="btn btn-gold" onclick="validarTarea(${k.id})"><i class="ti ti-check"></i> Validar directamente</button>
+        <button class="btn btn-r" onclick="rechazarTarea(${k.id})"><i class="ti ti-arrow-back"></i> Devolver al jefe</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function abrirFichaGerente(kid){
+  const k=DB.kanban.find(x=>x.id===kid);if(!k)return;
+  let data={};try{data=JSON.parse(k.confirm_data||'{}');}catch(e){}
+  const horasEq=JSON.parse(data.horas_equipo||'[]');
+  const tids=JSON.parse(k.trabajadores_ids||'[]');
+  const allW=[k.jefe,...tids].filter((v,i,a)=>v&&a.findIndex(x=>(x||'').toLowerCase()===(v||'').toLowerCase())===i);
+  const dbW=DB.trabajadores.filter(t=>allW.some(n=>(n||'').toLowerCase()===(t.nombre||'').toLowerCase()));
+  const mod=data.modalidad||'horas';
+  const modOpts=['horas','cepas','kg'].map(m=>'<option value="'+m+'" '+(mod===m?'selected':'')+'>'+{horas:'Por horas',cepas:'Por cepas',kg:'Por kg/t'}[m]+'</option>').join('');
+
+  let workersHTML='';
+  dbW.forEach(w=>{
+    const wh=horasEq.find(h=>(h.nombre||'').toLowerCase()===(w.nombre||'').toLowerCase())||{h:8,he:0,aus:false,hf:null};
+    const hReal=wh.aus?0:(wh.h||7);
+    const heReal=wh.aus?0:(wh.he||0);
+    const hFact=wh.hf!=null?wh.hf:Math.ceil(hReal+heReal);
+    const esJefe=w.nombre===k.jefe;
+    workersHTML+='<div style="background:var(--bg2);border-radius:var(--radius);padding:10px;margin-bottom:6px">'
+      +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">'
+        +'<div class="av">'+w.nombre.split(' ').map(n=>n[0]).join('')+'</div>'
+        +'<div>'
+          +'<div style="font-weight:600;font-size:13px">'+w.nombre+'</div>'
+          +'<div style="font-size:10px;color:var(--text2)">'+(esJefe?'Jefe del día':'Trabajador')+'</div>'
+        +'</div>'
+        +'<div style="margin-left:auto;display:flex;align-items:center;gap:5px">'
+          +'<span style="font-size:10px;color:var(--r)">Ausente</span>'
+          +'<input type="checkbox" id="gaus-'+kid+'-'+w.id+'" '+(wh.aus?'checked':'')+' style="width:auto" onchange="togAusGerente(\''+kid+'\',\''+w.id+'\')">'
+        +'</div>'
+      +'</div>'
+      +'<div id="ghoras-row-'+kid+'-'+w.id+'" style="'+(wh.aus?'display:none':'display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px')+'">'
+        +'<div>'
+          +'<div style="font-size:10px;font-weight:600;color:var(--text2);margin-bottom:3px">H. normales</div>'
+          +'<input type="number" id="gh-'+kid+'-'+w.id+'" value="'+hReal+'" min="0" max="16" step="0.5" style="width:100%;text-align:center" onchange="autoCalcFact(\''+kid+'\',\''+w.id+'\')">'
+        +'</div>'
+        +'<div>'
+          +'<div style="font-size:10px;font-weight:600;color:var(--gold);margin-bottom:3px">H. extra</div>'
+          +'<input type="number" id="ghe-'+kid+'-'+w.id+'" value="'+heReal+'" min="0" max="8" step="0.5" style="width:100%;text-align:center" onchange="autoCalcFact(\''+kid+'\',\''+w.id+'\')">'
+        +'</div>'
+        +'<div>'
+          +'<div style="font-size:10px;font-weight:600;color:var(--b);margin-bottom:3px">H. a facturar \uD83D\uDCB6</div>'
+          +'<input type="number" id="ghf-'+kid+'-'+w.id+'" value="'+hFact+'" min="0" max="24" step="0.5" style="width:100%;text-align:center;border-color:var(--b)">'
+          +'<div style="font-size:9px;color:var(--text3);margin-top:2px;text-align:center">Editable — cliente ve esto</div>'
+        +'</div>'
+      +'</div>'
+    +'</div>';
+  });
+
+  const yaValidado=k.validado_gerente;
+  const btnAccion=yaValidado
+    ?'<button class="btn btn-g" id="gbtn-'+kid+'" onclick="guardarCambiosFichaValidada('+kid+')"><i class="ti ti-device-floppy"></i> Guardar cambios</button>'
+    :'<button class="btn btn-gold" id="gbtn-'+kid+'" onclick="validarFichaEditada('+kid+')"><i class="ti ti-check"></i> Guardar y validar</button>'
+     +'<button class="btn btn-r" onclick="rechazarTarea('+kid+');closeModal()"><i class="ti ti-arrow-back"></i> Devolver al jefe</button>';
+
+  const cepasStyle=(mod==='cepas'?'':'display:none');
+  const kgStyle=(mod==='kg'?'':'display:none');
+
+  showModal(
+    '<div class="modal-t">'
+      +'<div>'
+        +'<div style="font-weight:700;font-size:14px">'+k.titulo+'</div>'
+        +'<div style="font-size:11px;color:var(--text2)">'+( getCl(k.cid).nombre||'—')+' · '+(k.fecha_prevista||'—')+(k.confirmado_por?' · Fichado por '+k.confirmado_por:'')+'</div>'
+      +'</div>'
+      +'<span onclick="closeModal()" style="cursor:pointer;color:var(--text3)"><i class="ti ti-x"></i></span>'
+    +'</div>'
+    +'<div class="alert '+(yaValidado?'al-g':'al-gold')+'" style="margin-bottom:12px">'
+      +'<i class="ti ti-'+(yaValidado?'check-circle':'edit')+'"></i> '
+      +(yaValidado?'Ficha ya validada. Puedes editar y guardar cambios.':'Revisa y edita los datos antes de validar.')
+    +'</div>'
+    +'<div class="fr2">'
+      +'<div class="fg"><label class="fl">Modalidad</label><select id="gmod-'+kid+'" onchange="togGMod('+kid+')">'+modOpts+'</select></div>'
+      +'<div class="fg"><label class="fl">Fecha</label><input type="date" id="gfecha-'+kid+'" value="'+(k.fecha_prevista||today())+'"></div>'
+    +'</div>'
+    +'<div id="gcepas-wrap-'+kid+'" class="fr2" style="'+cepasStyle+'">'
+      +'<div class="fg"><label class="fl">Cepas realizadas</label><input type="number" id="gcepas-'+kid+'" value="'+(data.cepas||0)+'"></div>'
+      +'<div class="fg"><label class="fl">Objetivo</label><input type="number" id="gobj-'+kid+'" value="'+(data.obj_cepas||0)+'"></div>'
+    +'</div>'
+    +'<div id="gkg-wrap-'+kid+'" class="fr2" style="'+kgStyle+'">'
+      +'<div class="fg"><label class="fl">Cantidad</label><input type="number" id="gkg-'+kid+'" value="'+(data.kg||0)+'"></div>'
+      +'<div class="fg"><label class="fl">Unidad</label><select id="gkgu-'+kid+'"><option value="kg" '+(data.unidad==='kg'||!data.unidad?'selected':'')+'>Kg</option><option value="t" '+(data.unidad==='t'?'selected':'')+'>Toneladas</option></select></div>'
+    +'</div>'
+    +'<div style="font-weight:600;font-size:13px;margin:12px 0 8px">'
+      +'<i class="ti ti-users" style="color:var(--g)"></i> Horas del equipo '
+      +'<span style="font-size:10px;color:var(--text3);font-weight:400">— H. a facturar es lo que ve el cliente</span>'
+    +'</div>'
+    +'<div style="margin-bottom:10px">'+workersHTML+'</div>'
+    +'<div class="fg"><label class="fl">Observaciones internas</label><textarea id="gobs-'+kid+'" rows="2">'+(data.obs||'')+'</textarea></div>'
+    +'<div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">'+btnAccion+'<button class="btn" onclick="closeModal()">Cancelar</button></div>'
+  );
+}
+
+
+function togAusGerente(kid,wid){
+  const aus=document.getElementById('gaus-'+kid+'-'+wid).checked;
+  document.getElementById('ghoras-row-'+kid+'-'+wid).style.display=aus?'none':'grid';
+}
+
+function autoCalcFact(kid,wid){
+  const h=parseFloat(document.getElementById('gh-'+kid+'-'+wid)?.value)||0;
+  const he=parseFloat(document.getElementById('ghe-'+kid+'-'+wid)?.value)||0;
+  const total=h+he;
+  const factEl=document.getElementById('ghf-'+kid+'-'+wid);
+  if(factEl) factEl.value=Math.ceil(total);
+}
+
+async function guardarCambiosFichaValidada(kid){
+  const k=DB.kanban.find(x=>x.id===kid);if(!k)return;
+  const btn=document.getElementById('gbtn-'+kid);if(btn){btn.disabled=true;btn.innerHTML='<div class="spinner"></div>';}
+  const tids=JSON.parse(k.trabajadores_ids||'[]');
+  const allW=[k.jefe,...tids].filter((v,i,a)=>v&&a.findIndex(x=>(x||'').toLowerCase()===(v||'').toLowerCase())===i);
+  const dbW=DB.trabajadores.filter(t=>allW.some(n=>(n||'').toLowerCase()===(t.nombre||'').toLowerCase()));
+  const mod=document.getElementById('gmod-'+kid)?.value||'horas';
+  const fecha=document.getElementById('gfecha-'+kid)?.value||k.fecha_prevista||today();
+  let totalH=0,totalHFact=0;const horasData=[];
+  for(const w of dbW){
+    const aus=document.getElementById('gaus-'+kid+'-'+w.id)?.checked||false;
+    const h=aus?0:parseFloat(document.getElementById('gh-'+kid+'-'+w.id)?.value)||0;
+    const he=aus?0:parseFloat(document.getElementById('ghe-'+kid+'-'+w.id)?.value)||0;
+    const hf=aus?0:parseFloat(document.getElementById('ghf-'+kid+'-'+w.id)?.value)||Math.ceil(h+he);
+    totalH+=h+he; totalHFact+=hf;
+    horasData.push({trabajador_id:w.id,nombre:w.nombre,h,he,hf,aus});
+    try{await sbUpsert('horas_diarias',{trabajador_id:w.id,fecha,horas_normal:h,horas_extra:he,ausente:aus},'trabajador_id,fecha');}catch(e){}
+  }
+  const confirmData={modalidad:mod,horas_total:totalH,horas_facturadas:totalHFact,nw:dbW.length,
+    cepas:parseInt(document.getElementById('gcepas-'+kid)?.value)||0,
+    kg:parseFloat(document.getElementById('gkg-'+kid)?.value)||0,
+    unidad:document.getElementById('gkgu-'+kid)?.value||'kg',
+    obs:document.getElementById('gobs-'+kid)?.value||'',
+    horas_equipo:JSON.stringify(horasData)};
+  // Actualizar bitácora existente
+  const b=DB.bitacora.find(x=>x.cid===k.cid&&x.servicio===k.servicio&&x.fecha===fecha);
+  try{
+    if(b){await sbPatch('bitacora',b.id,{modalidad:mod,horas:totalHFact,horas_reales:totalH,cepas:confirmData.cepas,kg:confirmData.kg,obs:confirmData.obs});}
+    await sbPatch('kanban',kid,{confirm_data:JSON.stringify(confirmData)});
+    await loadAll();closeModal();
+    alert('✅ Cambios guardados correctamente.');
+  }catch(e){if(btn){btn.disabled=false;btn.innerHTML='<i class="ti ti-device-floppy"></i> Guardar cambios';}alert('Error: '+e.message);}
+}
+
+function togGMod(kid){
+  const v=document.getElementById('gmod-'+kid).value;
+  document.getElementById('gcepas-wrap-'+kid).classList.toggle('hidden',v!=='cepas');
+  document.getElementById('gkg-wrap-'+kid).classList.toggle('hidden',v!=='kg');
+}
+
+async function validarFichaEditada(kid){
+  const k=DB.kanban.find(x=>x.id===kid);if(!k)return;
+  const btn=document.getElementById('gbtn-'+kid);if(btn){btn.disabled=true;btn.innerHTML='<div class="spinner"></div>';}
+  const tids=JSON.parse(k.trabajadores_ids||'[]');
+  const allW=[k.jefe,...tids].filter((v,i,a)=>v&&a.findIndex(x=>(x||'').toLowerCase()===(v||'').toLowerCase())===i);
+  const dbW=DB.trabajadores.filter(t=>allW.some(n=>(n||'').toLowerCase()===(t.nombre||'').toLowerCase()));
+  const mod=document.getElementById('gmod-'+kid)?.value||'horas';
+  const fecha=document.getElementById('gfecha-'+kid)?.value||k.fecha_prevista||today();
+  let totalH=0,totalHFact=0;const horasData=[];
+  for(const w of dbW){
+    const aus=document.getElementById('gaus-'+kid+'-'+w.id)?.checked||false;
+    const h=aus?0:parseFloat(document.getElementById('gh-'+kid+'-'+w.id)?.value)||0;
+    const he=aus?0:parseFloat(document.getElementById('ghe-'+kid+'-'+w.id)?.value)||0;
+    const hf=aus?0:parseFloat(document.getElementById('ghf-'+kid+'-'+w.id)?.value)||Math.ceil(h+he);
+    totalH+=h+he; totalHFact+=hf;
+    horasData.push({trabajador_id:w.id,nombre:w.nombre,h,he,hf,aus});
+    try{await sbUpsert('horas_diarias',{trabajador_id:w.id,fecha,horas_normal:h,horas_extra:he,ausente:aus},'trabajador_id,fecha');}catch(e){}
+  }
+  const confirmData={modalidad:mod,horas_total:totalH,horas_facturadas:totalHFact,nw:dbW.length,cepas:parseInt(document.getElementById('gcepas-'+kid)?.value)||0,kg:parseFloat(document.getElementById('gkg-'+kid)?.value)||0,unidad:document.getElementById('gkgu-'+kid)?.value||'kg',obs:document.getElementById('gobs-'+kid)?.value||'',horas_equipo:JSON.stringify(horasData)};
+  // horas en bitácora = horas_facturadas (lo que facturamos al cliente)
+  const body={fecha,cid:k.cid,servicio:k.servicio,modalidad:mod,jid:DB.trabajadores.find(t=>(t.nombre||'').toLowerCase()===(k.jefe||'').toLowerCase())?.id,nw:dbW.length,horas:totalHFact,horas_reales:totalH,cepas:confirmData.cepas,kg:confirmData.kg,unidad:confirmData.unidad,obs:confirmData.obs};
+  try{
+    await sbPost('bitacora',body);
+    await sbPatch('kanban',kid,{validado_gerente:true,columna:'terminado',confirm_data:JSON.stringify(confirmData)});
+    await loadAll();closeModal();
+    alert('✅ Ficha validada y registrada en Dashboard.');
+    render('validar');
+  }catch(e){if(btn){btn.disabled=false;btn.innerHTML='<i class="ti ti-check"></i> Guardar y validar';}alert('Error: '+e.message);}
+}
+
+async function validarTarea(kid){
+  const k=DB.kanban.find(x=>x.id===kid);if(!k)return;
+  let data={};try{data=JSON.parse(k.confirm_data||'{}');}catch(e){}
+  const body={fecha:k.fecha_prevista||today(),cid:k.cid,servicio:k.servicio,modalidad:data.modalidad||'horas',jid:DB.trabajadores.find(t=>(t.nombre||'').toLowerCase()===(k.jefe||'').toLowerCase())?.id,nw:data.nw||0,horas:data.horas_total||0,cepas:data.cepas||0,kg:data.kg||0,unidad:data.unidad||'kg',obs:data.obs||''};
+  try{
+    await sbPost('bitacora',body);
+    await sbPatch('kanban',kid,{validado_gerente:true,columna:'terminado'});
+    await loadAll();alert('✅ Validado y registrado en Dashboard.');render('validar');
+  }catch(e){alert('Error: '+e.message);}
+}
+
+async function rechazarTarea(kid){
+  if(!confirm('¿Devolver la ficha al jefe para que la corrija?'))return;
+  await sbPatch('kanban',kid,{confirmado_jefe:false,confirmado_por:null,confirm_data:null});
+  await loadAll();render('validar');
+}
+
+// ─── DASHBOARD ───
+function rDash(c,pt,tb){
+  pt.textContent='Dashboard';
+  // Solo registros ya validados por el gerente en bitácora
+  const tI=DB.bitacora.reduce((a,b)=>a+calcI(b),0);
+  const tC=DB.bitacora.reduce((a,b)=>a+calcC(b),0);
+  const ben=tI-tC;const marg=tI>0?Math.round(ben/tI*100):0;
+  const tH=DB.bitacora.reduce((a,b)=>a+(b.horas||0),0);
+  const mc=marg>=30?'var(--g)':marg>=20?'#BA7517':'#E24B4A';
+  const pendVal=DB.kanban.filter(k=>k.confirmado_jefe&&!k.validado_gerente);
+  // Tareas donde el gerente ES el jefe y aún no ha fichado
+  const misJornadas=DB.kanban.filter(k=>
+    !k.confirmado_jefe&&!k.validado_gerente&&
+    k.columna!=='terminado'&&
+    (k.jefe||'').toLowerCase()===currentUser.nombre.toLowerCase()
+  );
+  const profCl=DB.clientes.map(c2=>{const bits=DB.bitacora.filter(b=>b.cid===c2.id);const i=bits.reduce((a,b)=>a+calcI(b),0);const co=bits.reduce((a,b)=>a+calcC(b),0);return{nombre:c2.nombre,i,m:i>0?Math.round((i-co)/i*100):0};}).filter(x=>x.i>0).sort((a,b)=>b.m-a.m);
+  const rows=DB.bitacora.slice(0,5).map(b=>`<tr><td>${b.fecha}</td><td><strong>${getCl(b.cid).nombre}</strong></td><td style="font-size:11px">${b.servicio||'—'}</td><td>${getTrab(b.jid).nombre}</td><td>${eur(calcI(b))}</td><td>${mgBadge(calcM(b))}</td></tr>`).join('');
+  c.innerHTML=`
+  ${pendVal.length?`<div class="alert al-gold" style="cursor:pointer" onclick="go('validar',null)"><i class="ti ti-bell"></i> <strong>${pendVal.length} tarea(s)</strong> confirmadas por jefes esperan tu validación → Validar ahora</div>`:''}
+  ${misJornadas.length?`<div class="alert al-w" style="cursor:pointer" onclick="go('kanban',null)"><i class="ti ti-clipboard-list"></i> <strong>${misJornadas.length} jornada(s) tuyas</strong> pendientes de fichar → Ve a Planificación y pulsa "Fichar" en la tarjeta</div>`:''}
+  <div class="g4">
+    <div class="mc"><div class="mc-l">Facturación acumulada</div><div class="mc-v">${eur(tI)}</div></div>
+    <div class="mc"><div class="mc-l">Coste MO</div><div class="mc-v">${eur(tC)}</div></div>
+    <div class="mc"><div class="mc-l">Beneficio</div><div class="mc-v" style="color:${mc}">${eur(ben)}</div><div class="mc-s" style="color:${mc}">Margen ${marg}%</div></div>
+    <div class="mc"><div class="mc-l">Horas trabajadas</div><div class="mc-v">${tH}h</div></div>
+  </div>
+  <div class="g2">
+    <div class="card"><div class="ct">Rentabilidad por cliente</div>
+    ${profCl.map(p=>`<div style="display:flex;align-items:center;gap:7px;margin-bottom:6px"><span style="font-size:12px;min-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${p.nombre.replace('Château ','Ch. ')}</span><div style="flex:1;height:6px;background:var(--bg3);border-radius:3px"><div style="width:${Math.min(p.m*2.8,100)}%;height:100%;background:${p.m>=30?'var(--g)':p.m>=20?'#BA7517':'#E24B4A'};border-radius:3px"></div></div><span style="font-size:11px;font-weight:600;color:${p.m>=30?'var(--g)':p.m>=20?'#BA7517':'#E24B4A'}">${p.m}%</span></div>`).join('')||'<div class="empty">Sin datos</div>'}
+    </div>
+    <div class="card"><div class="ct">Últimos registros</div>
+    <div class="tbl-wrap"><table><thead><tr><th>Fecha</th><th>Propiedad</th><th>Servicio</th><th>Jefe</th><th>Ingreso</th><th>Margen</th></tr></thead><tbody>${rows||'<tr><td colspan="6" class="empty">Sin registros</td></tr>'}</tbody></table></div></div>
+  </div>`;
+}
+
+// ─── KANBAN con DRAG & DROP real entre columnas ───
+function rKanban(c,pt,tb){
+  pt.textContent='Planificación';
+  tb.innerHTML=`<button class="btn btn-g btn-sm" onclick="openKModal()"><i class="ti ti-plus"></i> Asignar jornada</button>`;
+
+  const cols=[
+    {key:'pendiente', l:'Pendiente',     col:'#888780', bg:'var(--bg2)'},
+    {key:'porhacer',  l:'Por hacer',     col:'var(--b)', bg:'#EBF3FC'},
+    {key:'urgente',   l:'🔴 Urgente',    col:'#E24B4A',  bg:'#FFF0F0'},
+    {key:'encurso',   l:'En curso',      col:'#BA7517',  bg:'#FEF3E2'},
+    {key:'terminado', l:'Terminado',     col:'var(--g)', bg:'#EDF7EE'},
+  ];
+
+  const kCards=id=>DB.kanban.filter(k=>k.columna===id);
+
+  c.innerHTML=`<div class="kanban" style="grid-template-columns:repeat(5,1fr)">
+  ${cols.map(({key,l,col,bg})=>{
+    const cards=kCards(key).map(k=>{
+      const tids=JSON.parse(k.trabajadores_ids||'[]');
+      const nW=tids.length+(k.jefe?1:0);
+      let statusBadge='';
+      if(k.validado_gerente) statusBadge='<span class="badge bg" style="font-size:9px">✅ Validada</span>';
+      else if(k.confirmado_jefe) statusBadge='<span class="badge bgold" style="font-size:9px">⏳ Validación</span>';
+      return`<div class="kcard ${k.validado_gerente?'confirmado':k.confirmado_jefe?'pendiente-ok':''}"
+        draggable="true"
+        data-id="${k.id}"
+        ondragstart="kDragStart(event,${k.id})"
+        ondragend="kDragEnd(event)"
+        style="cursor:grab">
+        <div class="kcard-t" style="display:flex;justify-content:space-between;align-items:flex-start">
+          <span>${k.titulo}</span>
+          ${k.urgente?'<span class="badge br" style="font-size:9px;flex-shrink:0">🔴</span>':''}
+        </div>
+        <div class="kcard-m">
+          <span><i class="ti ti-building" style="font-size:10px"></i> ${getCl(k.cid).nombre||'—'}</span>
+          <span><i class="ti ti-user" style="font-size:10px"></i> ${k.jefe||'—'} · ${nW} trab.</span>
+          <span><i class="ti ti-calendar" style="font-size:10px"></i> ${k.fecha_prevista||'—'}</span>
+          ${statusBadge}
+        </div>
+        <div style="display:flex;justify-content:flex-end;margin-top:5px;gap:4px">
+          ${!k.confirmado_jefe&&!k.validado_gerente?`<button class="btn btn-sm btn-g" onclick="abrirFicha(${k.id});event.stopPropagation()" title="Fichar jornada"><i class="ti ti-clipboard-check"></i> Fichar</button>`:''}
+          ${k.confirmado_jefe||k.validado_gerente?`<button class="btn btn-sm btn-b" onclick="abrirFichaGerente(${k.id});event.stopPropagation()" title="Ver/editar ficha"><i class="ti ti-edit"></i></button>`:`<button class="btn btn-sm btn-b" onclick="editarDesdKanban(${k.id});event.stopPropagation()" title="Editar tarea"><i class="ti ti-pencil"></i></button>`}
+          <button class="btn btn-sm" onclick="editarProgreso(${k.id},${k.progreso||0});event.stopPropagation()" title="Actualizar progreso" style="background:var(--bg2);border-color:var(--gold);color:var(--gold)"><i class="ti ti-percentage"></i> ${k.progreso||0}%</button>
+          <button class="btn btn-sm btn-r" onclick="delK(${k.id});event.stopPropagation()"><i class="ti ti-trash"></i></button>
+        </div>
+      </div>`;
+    }).join('');
+    return`<div class="kcol"
+      style="background:${bg};border-top:3px solid ${col}"
+      ondragover="kDragOver(event)"
+      ondragleave="kDragLeave(event)"
+      ondrop="kDrop(event,'${key}')">
+      <div class="kcol-h">
+        <span style="color:${col};font-weight:700">${l}</span>
+        <span style="background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:1px 6px;font-size:10px">${kCards(key).length}</span>
+      </div>
+      ${cards||`<div style="text-align:center;padding:20px 8px;color:var(--text3);font-size:12px;border:2px dashed var(--border);border-radius:var(--radius);margin-top:4px">Arrastra aquí</div>`}
+    </div>`;
+  }).join('')}
+  </div>`;
+}
+
+// Drag & drop entre columnas
+let _kDragId=null;
+function kDragStart(e,id){
+  _kDragId=id;
+  e.target.style.opacity='.4';
+  e.dataTransfer.effectAllowed='move';
+}
+function kDragEnd(e){
+  e.target.style.opacity='1';
+  _kDragId=null;
+  document.querySelectorAll('.kcol').forEach(c=>c.classList.remove('kcol-over'));
+}
+function kDragOver(e){
+  e.preventDefault();
+  e.dataTransfer.dropEffect='move';
+  e.currentTarget.classList.add('kcol-over');
+}
+function kDragLeave(e){
+  e.currentTarget.classList.remove('kcol-over');
+}
+async function kDrop(e,col){
+  e.preventDefault();
+  e.currentTarget.classList.remove('kcol-over');
+  if(!_kDragId)return;
+  const card=DB.kanban.find(k=>k.id===_kDragId);
+  if(!card||card.columna===col)return;
+  // Si se mueve a urgente, marcar urgente=true también
+  const updates={columna:col};
+  if(col==='urgente') updates.urgente=true;
+  try{
+    await sbPatch('kanban',_kDragId,updates);
+    card.columna=col;
+    if(col==='urgente') card.urgente=true;
+    render('kanban');
+  }catch(e){alert('Error al mover: '+e.message);}
+}
+function editarDesdKanban(kid){
+  const k=DB.kanban.find(x=>x.id===kid);if(!k)return;
+
+  // Si tiene ficha fichada (confirmado_jefe) → abrir ficha del gerente editable
+  if(k.confirmado_jefe||k.validado_gerente){
+    abrirFichaGerente(kid);
+    return;
+  }
+
+  // Si no tiene ficha aún → editar datos básicos de la tarea
+  const clOpts=DB.clientes.map(c=>`<option value="${c.id}" ${c.id===k.cid?'selected':''}>${c.nombre}</option>`).join('');
+  const jefeOpts=DB.usuarios.filter(u=>u.activo).map(u=>`<option value="${u.nombre}" ${u.nombre===k.jefe?'selected':''}>${u.nombre}</option>`).join('');
+  const svcs=DB.servicios.filter(s=>s.cid===k.cid);
+  const svcOpts=svcs.map(s=>`<option value="${s.servicio}" ${s.servicio===k.servicio?'selected':''}>${s.servicio}</option>`).join('');
+  const colOpts=['pendiente','porhacer','urgente','encurso','terminado'].map(c=>`<option value="${c}" ${c===k.columna?'selected':''}>${{pendiente:'Pendiente',porhacer:'Por hacer',urgente:'🔴 Urgente',encurso:'En curso',terminado:'Terminado'}[c]}</option>`).join('');
+
+  showModal(`<div class="modal-t">
+    <div><div style="font-weight:700">Editar tarea</div><div style="font-size:11px;color:var(--text2)">${k.titulo}</div></div>
+    <span onclick="closeModal()" style="cursor:pointer;color:var(--text3)"><i class="ti ti-x"></i></span>
+  </div>
+  <div class="alert al-gold" style="margin-bottom:12px"><i class="ti ti-edit"></i> Esta tarea aún no ha sido fichada. Puedes editar todos sus datos.</div>
+  <div class="fr2">
+    <div class="fg"><label class="fl">Fecha</label><input type="date" id="ek-fecha" value="${k.fecha_prevista||today()}"></div>
+    <div class="fg"><label class="fl">Columna</label><select id="ek-col">${colOpts}</select></div>
+  </div>
+  <div class="fr2">
+    <div class="fg"><label class="fl">Propiedad</label><select id="ek-cid">${clOpts}</select></div>
+    <div class="fg"><label class="fl">Servicio</label><select id="ek-svc">${svcOpts}</select></div>
+  </div>
+  <div class="fg"><label class="fl">Jefe del día</label><select id="ek-jefe">${jefeOpts}</select></div>
+  <div style="display:flex;align-items:center;gap:7px;margin-bottom:9px">
+    <input type="checkbox" id="ek-urg" ${k.urgente?'checked':''} style="width:auto">
+    <label class="fl" for="ek-urg" style="margin:0">Marcar como urgente 🔴</label>
+  </div>
+  <div style="display:flex;gap:8px;margin-top:12px">
+    <button class="btn btn-g" id="ek-btn" onclick="guardarEdicionKanban(${kid})"><i class="ti ti-check"></i> Guardar cambios</button>
+    <button class="btn" onclick="closeModal()">Cancelar</button>
+  </div>`);
+}
+
+async function guardarEdicionKanban(kid){
+  const btn=document.getElementById('ek-btn');btn.disabled=true;btn.innerHTML='<div class="spinner"></div>';
+  const body={
+    fecha_prevista:document.getElementById('ek-fecha').value,
+    columna:document.getElementById('ek-col').value,
+    cid:parseInt(document.getElementById('ek-cid').value),
+    servicio:document.getElementById('ek-svc').value,
+    jefe:document.getElementById('ek-jefe').value,
+    urgente:document.getElementById('ek-urg').checked,
+  };
+  // Actualizar título
+  const cl=DB.clientes.find(c=>c.id===body.cid);
+  body.titulo=body.servicio+' — '+(cl?cl.nombre:'');
+  try{
+    await sbPatch('kanban',kid,body);
+    const card=DB.kanban.find(k=>k.id===kid);
+    if(card)Object.assign(card,body);
+    closeModal();render('kanban');
+  }catch(e){btn.disabled=false;btn.innerHTML='<i class="ti ti-check"></i> Guardar cambios';alert('Error: '+e.message);}
+}
+
+async function delK(id){if(!confirm('¿Eliminar?'))return;await sbDelete('kanban',id);DB.kanban=DB.kanban.filter(k=>k.id!==id);render('kanban');}
+
+function editarProgreso(kid,actual){
+  showModal('<div class="modal-t"><div style="font-weight:700">Actualizar progreso</div><span onclick="closeModal()" style="cursor:pointer;color:var(--text3)"><i class="ti ti-x"></i></span></div>'
+    +'<div class="alert al-g" style="margin-bottom:14px"><i class="ti ti-info-circle"></i> Este % es lo que verá el cliente en su portal. Actualízalo diariamente.</div>'
+    +'<div class="fg"><label class="fl">Progreso actual</label>'
+      +'<input type="range" id="prog-range" min="0" max="100" step="5" value="'+actual+'" oninput="document.getElementById(\'prog-val\').textContent=this.value+\'%\'" style="width:100%;accent-color:var(--g)">'
+      +'<div style="text-align:center;font-size:28px;font-weight:700;color:var(--g);margin-top:6px" id="prog-val">'+actual+'%</div>'
+    +'</div>'
+    +'<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:14px">'
+      +[0,25,50,75,100].map(v=>'<button class="btn btn-sm" onclick="document.getElementById(\'prog-range\').value='+v+';document.getElementById(\'prog-val\').textContent=\''+v+'%\'">'+v+'%</button>').join('')
+    +'</div>'
+    +'<div style="display:flex;gap:8px">'
+      +'<button class="btn btn-g" id="prog-btn" onclick="guardarProgreso('+kid+')"><i class="ti ti-check"></i> Guardar</button>'
+      +'<button class="btn" onclick="closeModal()">Cancelar</button>'
+    +'</div>');
+}
+
+async function guardarProgreso(kid){
+  const btn=document.getElementById('prog-btn');
+  btn.disabled=true;btn.innerHTML='<div class="spinner"></div>';
+  const val=parseInt(document.getElementById('prog-range').value)||0;
+  // Si 100% → mover a terminado automáticamente
+  const updates={progreso:val};
+  if(val===100) updates.columna='terminado';
+  try{
+    await sbPatch('kanban',kid,updates);
+    const k=DB.kanban.find(x=>x.id===kid);
+    if(k){k.progreso=val;if(val===100)k.columna='terminado';}
+    closeModal();render('kanban');
+  }catch(e){btn.disabled=false;btn.innerHTML='<i class="ti ti-check"></i> Guardar';alert('Error: '+e.message);}
+}
+
+// ─── KANBAN MODAL con DRAG & DROP ───
+function openKModal(){
+  const clOpts=DB.clientes.map(c=>`<option value="${c.id}">${c.nombre}</option>`).join('');
+  // Combinar usuarios activos para el selector de jefe
+  const todosJefes=[...DB.usuarios.filter(u=>u.activo).map(u=>u.nombre)];
+  const jefeOpts=todosJefes.map(n=>`<option value="${n}">${n}</option>`).join('');
+  const trabActivos=DB.trabajadores.filter(t=>t.activo);
+
+  showModal(`<div class="modal-t">Asignar jornada <span onclick="closeModal()" style="cursor:pointer;color:var(--text3)"><i class="ti ti-x"></i></span></div>
+  <div class="fr2">
+    <div class="fg"><label class="fl">Fecha</label><input type="date" id="k-f" value="${today()}"></div>
+    <div class="fg"><label class="fl">Propiedad</label><select id="k-cid" onchange="updKSvcs()">${clOpts}</select></div>
+  </div>
+  <div class="fr2">
+    <div class="fg"><label class="fl">Servicio</label><select id="k-svc" onchange="updKMod()"><option>—</option></select></div>
+    <div class="fg"><label class="fl">Modalidad</label><select id="k-mod"><option value="horas">Por horas</option><option value="cepas">Por cepas</option><option value="kg">Por kg/t</option></select></div>
+  </div>
+  <div class="fg"><label class="fl">Jefe del día (responsable)</label><select id="k-jefe">${jefeOpts}</select></div>
+  <div class="fg"><label class="fl">Columna inicial</label><select id="k-col"><option value="pendiente">Pendiente</option><option value="porhacer">Por hacer</option><option value="urgente">🔴 Urgente</option><option value="encurso" selected>En curso</option></select></div>
+  <div style="display:flex;align-items:center;gap:7px;margin-bottom:9px"><input type="checkbox" id="k-urg" style="width:auto"><label class="fl" for="k-urg" style="margin:0">Marcar como urgente</label></div>
+
+  <div class="fl" style="margin-bottom:6px">Asignar trabajadores — arrastra a "Equipo asignado"</div>
+  <div class="drag-area">
+    <div class="drag-col" id="pool-col" ondragover="allowDrop(event)" ondrop="dropWorker(event,'pool')">
+      <div class="drag-col-title">Disponibles</div>
+      <div id="pool-workers">
+        ${trabActivos.map(w=>'<div class="worker-chip" draggable="true" id="wchip-'+w.id+'" data-id="'+w.id+'" data-nombre="'+w.nombre+'" ondragstart="dragStart(event)" ondragend="dragEnd(event)"><div class="av" style="width:20px;height:20px;font-size:9px">'+w.nombre.split(' ').map(n=>n[0]).join('')+'</div> '+w.nombre+'</div>').join('')}
+      </div>
+    </div>
+    <div class="drag-col" id="assigned-col" ondragover="allowDrop(event)" ondrop="dropWorker(event,'assigned')">
+      <div class="drag-col-title">✓ Equipo asignado</div>
+      <div id="assigned-workers"></div>
+    </div>
+  </div>
+
+  <div style="display:flex;gap:7px;margin-top:11px">
+    <button class="btn btn-g" id="k-btn" onclick="saveK()"><i class="ti ti-check"></i> Crear y asignar</button>
+    <button class="btn" onclick="closeModal()">Cancelar</button>
+  </div>`);
+  updKSvcs();
+}
+
+// DRAG & DROP
+let draggedEl=null;
+function dragStart(e){draggedEl=e.target;e.target.style.opacity='.4';}
+function dragEnd(e){e.target.style.opacity='1';draggedEl=null;}
+function allowDrop(e){e.preventDefault();e.currentTarget.classList.add('over');}
+function dropWorker(e,target){
+  e.preventDefault();
+  e.currentTarget.classList.remove('over');
+  if(!draggedEl)return;
+  const dest=target==='assigned'?document.getElementById('assigned-workers'):document.getElementById('pool-workers');
+  dest.appendChild(draggedEl);
+  draggedEl.classList.toggle('assigned',target==='assigned');
+}
+// Remove 'over' on dragleave
+document.addEventListener('dragleave',e=>{if(e.target.classList)e.target.classList.remove('over');});
+
+function updKSvcs(){const cid=parseInt(document.getElementById('k-cid').value);const svcs=DB.servicios.filter(s=>s.cid===cid&&s.activo);document.getElementById('k-svc').innerHTML=svcs.map(s=>`<option value="${s.servicio}">${s.servicio}</option>`).join('');updKMod();}
+function updKMod(){const cid=parseInt(document.getElementById('k-cid').value);const sn=document.getElementById('k-svc').value;const s=DB.servicios.find(x=>x.cid===cid&&x.servicio===sn);const m=document.getElementById('k-mod');if(s){if(s.tipo==='horas')m.innerHTML='<option value="horas">Por horas</option>';else if(s.tipo==='kg')m.innerHTML='<option value="kg">Por kg/t</option>';else m.innerHTML='<option value="horas">Por horas</option><option value="cepas">Por cepas</option>';}}
+
+async function saveK(){
+  const btn=document.getElementById('k-btn');btn.disabled=true;btn.innerHTML='<div class="spinner"></div>';
+  const cid=parseInt(document.getElementById('k-cid').value);
+  const svc=document.getElementById('k-svc').value;
+  const jefe=document.getElementById('k-jefe').value.trim();
+  const fecha=document.getElementById('k-f').value;
+  // Normalizar nombres de trabajadores asignados
+  const assignedChips=document.querySelectorAll('#assigned-workers .worker-chip');
+  const workers=Array.from(assignedChips).map(c=>c.dataset.nombre.trim()).filter(n=>n.toLowerCase()!==jefe.toLowerCase());
+  const cl2=DB.clientes.find(c=>c.id===cid);
+  const body={titulo:`${svc} — ${cl2?cl2.nombre:''}`,cid,servicio:svc,modalidad:document.getElementById('k-mod').value,jefe,trabajadores_ids:JSON.stringify(workers),fecha_prevista:fecha,columna:document.getElementById('k-col').value,urgente:document.getElementById('k-urg').checked,confirmado_jefe:false,validado_gerente:false};
+  try{const res=await sbPost('kanban',body);DB.kanban.push(Array.isArray(res)?res[0]:res);closeModal();render('kanban');}
+  catch(e){btn.disabled=false;btn.innerHTML='Reintentar';alert('Error: '+e.message);}
+}
+
+// ─── BITÁCORA ───
+function rBitacora(c,pt,tb){
+  pt.textContent='Bitácora';
+  tb.innerHTML=`<button class="btn btn-g btn-sm" onclick="openBModal()"><i class="ti ti-plus"></i> Nuevo</button><button class="btn btn-sm" onclick="exportCSV()"><i class="ti ti-download"></i> CSV</button>`;
+
+  // Tareas EN CURSO del kanban (pueden durar días/semanas)
+  const enCurso=DB.kanban.filter(k=>k.columna==='encurso'||k.columna==='urgente');
+  // Registros ya terminados y validados en bitácora
+  const terminados=DB.bitacora;
+
+  let html='';
+
+  // BLOQUE EN CURSO
+  if(enCurso.length){
+    html+=`<div style="font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;display:flex;align-items:center;gap:7px"><span style="width:8px;height:8px;border-radius:50%;background:#BA7517;display:inline-block"></span> En curso (${enCurso.length})</div>`;
+    html+=`<div class="card" style="margin-bottom:14px"><div class="tbl-wrap"><table><thead><tr><th>Fecha prevista</th><th>Propiedad</th><th>Zona</th><th>Servicio</th><th>Jefe</th><th>Equipo</th><th>Estado</th><th>Columna</th></tr></thead><tbody>`;
+    html+=enCurso.map(k=>{
+      const tids=JSON.parse(k.trabajadores_ids||'[]');
+      const nW=tids.length+(k.jefe?1:0);
+      let est='';
+      if(k.confirmado_jefe&&!k.validado_gerente) est='<span class="badge bgold">⏳ Pend. validación</span>';
+      else if(!k.confirmado_jefe) est='<span class="badge ba">En progreso</span>';
+      const col=k.columna==='urgente'?'<span class="badge br">🔴 Urgente</span>':'<span class="badge ba">En curso</span>';
+      return`<tr>
+        <td>${k.fecha_prevista||'—'}</td>
+        <td><strong>${getCl(k.cid).nombre}</strong></td>
+        <td>${zBadge(getCl(k.cid).zona)}</td>
+        <td style="font-size:11px">${k.servicio||'—'}</td>
+        <td>${k.jefe||'—'}</td>
+        <td>${nW} trab.</td>
+        <td>${est}</td>
+        <td>${col}</td>
+      </tr>`;
+    }).join('');
+    html+=`</tbody></table></div></div>`;
+  }
+
+  // BLOQUE TERMINADOS
+  html+=`<div style="font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;display:flex;align-items:center;gap:7px"><span style="width:8px;height:8px;border-radius:50%;background:var(--g);display:inline-block"></span> Terminados y validados (${terminados.length})</div>`;
+  const rowsT=terminados.map(b=>{
+    const cant=b.modalidad==='horas'?(b.horas||0)+'h':b.modalidad==='cepas'?(b.cepas||0)+' cepas':(b.kg||0)+' '+b.unidad;
+    return`<tr>
+      <td>${b.fecha}</td>
+      <td><strong>${getCl(b.cid).nombre}</strong></td>
+      <td>${zBadge(getCl(b.cid).zona)}</td>
+      <td style="font-size:11px">${b.servicio||'—'}</td>
+      <td>${mBadge(b.modalidad)}</td>
+      <td>${getTrab(b.jid).nombre}</td>
+      <td>${b.nw}</td>
+      <td>${cant}</td>
+      <td>${eur(calcI(b))}</td>
+      <td>${mgBadge(calcM(b))}</td>
+      <td><span class="badge bg">✅ Validado</span></td>
+      <td style="display:flex;gap:4px">
+        <button class="btn btn-sm btn-b" onclick="editarBitacora(${b.id})" title="Editar"><i class="ti ti-edit"></i></button>
+        <button class="btn btn-sm btn-r" onclick="delB(${b.id})" title="Eliminar"><i class="ti ti-trash"></i></button>
+      </td>
+    </tr>`;
+  }).join('');
+  html+=`<div class="card"><div class="tbl-wrap"><table><thead><tr><th>Fecha</th><th>Propiedad</th><th>Zona</th><th>Servicio</th><th>Mod.</th><th>Jefe</th><th>Eq.</th><th>Cantidad</th><th>Ingreso</th><th>Margen</th><th>Estado</th><th></th></tr></thead><tbody>${rowsT||'<tr><td colspan="12" class="empty">Sin registros terminados aún</td></tr>'}</tbody></table></div></div>`;
+
+  c.innerHTML=html;
+}
+
+function openBModal(){
+  const clOpts=DB.clientes.map(c=>`<option value="${c.id}">${c.nombre}</option>`).join('');
+  const jOpts=DB.trabajadores.map(t=>`<option value="${t.id}">${t.nombre}</option>`).join('');
+  showModal(`<div class="modal-t">Nueva jornada <span onclick="closeModal()" style="cursor:pointer;color:var(--text3)"><i class="ti ti-x"></i></span></div>
+  <div class="fr2"><div class="fg"><label class="fl">Fecha</label><input type="date" id="b-f" value="${today()}"></div><div class="fg"><label class="fl">Propiedad</label><select id="b-cid" onchange="updSvcs();rtP()">${clOpts}</select></div></div>
+  <div class="fr2"><div class="fg"><label class="fl">Servicio</label><select id="b-svc" onchange="updMod();rtP()"><option>—</option></select></div><div class="fg"><label class="fl">Modalidad</label><select id="b-mod" onchange="togMod();rtP()"><option value="horas">Por horas</option><option value="cepas">Por cepas</option><option value="kg">Por kg/t</option></select></div></div>
+  <div class="fr3"><div class="fg"><label class="fl">Jefe</label><select id="b-jid">${jOpts}</select></div><div class="fg"><label class="fl">Nº trab.</label><input type="number" id="b-nw" value="6" onchange="rtP()"></div><div class="fg"><label class="fl">Horas totales</label><input type="number" id="b-h" placeholder="ej: 48" onchange="rtP()"></div></div>
+  <div id="bm-cepas" class="fr2 hidden"><div class="fg"><label class="fl">Cepas</label><input type="number" id="b-cep" placeholder="ej: 1200" onchange="rtP()"></div><div class="fg"><label class="fl">Objetivo</label><input type="number" id="b-obj" placeholder="ej: 1000"></div></div>
+  <div id="bm-kg" class="fr2 hidden"><div class="fg"><label class="fl">Cantidad</label><input type="number" id="b-kg" onchange="rtP()"></div><div class="fg"><label class="fl">Unidad</label><select id="b-kgu" onchange="rtP()"><option value="kg">Kg</option><option value="t">Toneladas</option></select></div></div>
+  <div class="fg"><label class="fl">Obs.</label><textarea id="b-obs" rows="2"></textarea></div>
+  <div class="rtp"><div><div class="rtp-l">Ingreso est.</div><div class="rtp-v" id="rtp-i">—</div></div><div><div class="rtp-l">Coste MO</div><div class="rtp-v" id="rtp-c">—</div></div><div><div class="rtp-l">Margen</div><div class="rtp-v" id="rtp-m">—</div></div></div>
+  <div style="display:flex;gap:7px;margin-top:11px"><button class="btn btn-g" id="b-btn" onclick="saveB()"><i class="ti ti-check"></i> Guardar</button><button class="btn" onclick="closeModal()">Cancelar</button></div>`);
+  updSvcs();rtP();
+}
+function updSvcs(){const cid=parseInt(document.getElementById('b-cid').value);const svcs=DB.servicios.filter(s=>s.cid===cid&&s.activo);document.getElementById('b-svc').innerHTML=svcs.map(s=>`<option value="${s.servicio}">${s.servicio}</option>`).join('');updMod();}
+function updMod(){const cid=parseInt(document.getElementById('b-cid').value);const sn=document.getElementById('b-svc').value;const s=DB.servicios.find(x=>x.cid===cid&&x.servicio===sn);const m=document.getElementById('b-mod');if(s){if(s.tipo==='horas')m.innerHTML='<option value="horas">Por horas</option>';else if(s.tipo==='kg')m.innerHTML='<option value="kg">Por kg/t</option><option value="horas">Por horas</option>';else m.innerHTML='<option value="horas">Por horas</option><option value="cepas">Por cepas</option>';}togMod();}
+function togMod(){const v=document.getElementById('b-mod').value;['cepas','kg'].forEach(m=>{const el=document.getElementById('bm-'+m);if(el)el.classList.toggle('hidden',v!==m);});}
+function rtP(){
+  try{
+    const cid=parseInt(document.getElementById('b-cid').value);const sn=document.getElementById('b-svc').value;
+    const s=DB.servicios.find(x=>x.cid===cid&&x.servicio===sn);if(!s)return;
+    const mod=document.getElementById('b-mod').value;
+    const h=parseFloat(document.getElementById('b-h').value)||0;
+    const cep=parseFloat(document.getElementById('b-cep')?.value)||0;
+    const kg=parseFloat(document.getElementById('b-kg')?.value)||0;
+    const unit=document.getElementById('b-kgu')?.value||'kg';
+    let ing=0;if(mod==='horas')ing=h*(s.precio_hora||0);else if(mod==='cepas')ing=cep*(s.precio_cepa||0);else if(unit==='t')ing=kg*(s.precio_t||0);else ing=kg*(s.precio_kg||0);
+    const cost=h*COSTE;const marg=ing>0?Math.round((ing-cost)/ing*100):0;
+    document.getElementById('rtp-i').textContent=eur(ing);document.getElementById('rtp-c').textContent=eur(cost);
+    const mc=marg>=30?'var(--g)':marg>=20?'#BA7517':'#E24B4A';
+    document.getElementById('rtp-m').innerHTML=`<span style="color:${mc}">${marg}% ${marg>=30?'✓':marg>=20?'⚠':'✗'}</span>`;
+  }catch(e){}
+}
+async function saveB(){
+  const btn=document.getElementById('b-btn');btn.disabled=true;btn.innerHTML='<div class="spinner"></div>';
+  const mod=document.getElementById('b-mod').value;
+  const body={fecha:document.getElementById('b-f').value,cid:parseInt(document.getElementById('b-cid').value),servicio:document.getElementById('b-svc').value,modalidad:mod,jid:parseInt(document.getElementById('b-jid').value),nw:parseInt(document.getElementById('b-nw').value)||1,horas:parseFloat(document.getElementById('b-h').value)||0,cepas:parseInt(document.getElementById('b-cep')?.value)||0,kg:parseFloat(document.getElementById('b-kg')?.value)||0,unidad:document.getElementById('b-kgu')?.value||'kg',obs:document.getElementById('b-obs').value};
+  try{const res=await sbPost('bitacora',body);DB.bitacora.unshift(Array.isArray(res)?res[0]:res);closeModal();render('bitacora');}
+  catch(e){btn.disabled=false;btn.innerHTML='Reintentar';alert('Error: '+e.message);}
+}
+async function delB(id){if(!confirm('¿Eliminar?'))return;await sbDelete('bitacora',id);DB.bitacora=DB.bitacora.filter(b=>b.id!==id);render('bitacora');}
+
+function editarBitacora(id){
+  const b=DB.bitacora.find(x=>x.id===id);if(!b)return;
+  const clOpts=DB.clientes.map(c=>`<option value="${c.id}" ${c.id===b.cid?'selected':''}>${c.nombre}</option>`).join('');
+  const jOpts=DB.trabajadores.map(t=>`<option value="${t.id}" ${t.id===b.jid?'selected':''}>${t.nombre}</option>`).join('');
+  const svcs=DB.servicios.filter(s=>s.cid===b.cid);
+  const svcOpts=svcs.map(s=>`<option value="${s.servicio}" ${s.servicio===b.servicio?'selected':''}>${s.servicio}</option>`).join('');
+  const modOpts=['horas','cepas','kg'].map(m=>`<option value="${m}" ${b.modalidad===m?'selected':''}>${{horas:'Por horas',cepas:'Por cepas',kg:'Por kg/t'}[m]}</option>`).join('');
+
+  showModal(`<div class="modal-t">
+    <div><div style="font-weight:700">Editar registro</div><div style="font-size:11px;color:var(--text2)">${b.fecha} · ${getCl(b.cid).nombre}</div></div>
+    <span onclick="closeModal()" style="cursor:pointer;color:var(--text3)"><i class="ti ti-x"></i></span>
+  </div>
+  <div class="alert al-w" style="margin-bottom:12px"><i class="ti ti-alert-triangle"></i> Estás editando un registro ya validado. Los cambios se guardan directamente en bitácora.</div>
+  <div class="fr2">
+    <div class="fg"><label class="fl">Fecha</label><input type="date" id="eb-fecha" value="${b.fecha}"></div>
+    <div class="fg"><label class="fl">Propiedad</label><select id="eb-cid">${clOpts}</select></div>
+  </div>
+  <div class="fr2">
+    <div class="fg"><label class="fl">Servicio</label><select id="eb-svc">${svcOpts}</select></div>
+    <div class="fg"><label class="fl">Modalidad</label><select id="eb-mod" onchange="togEBMod()">${modOpts}</select></div>
+  </div>
+  <div class="fr3">
+    <div class="fg"><label class="fl">Jefe</label><select id="eb-jid">${jOpts}</select></div>
+    <div class="fg"><label class="fl">Nº trabajadores</label><input type="number" id="eb-nw" value="${b.nw||0}"></div>
+    <div class="fg"><label class="fl">Horas totales</label><input type="number" id="eb-h" value="${b.horas||0}" step="0.5"></div>
+  </div>
+  <div id="eb-cepas" class="${b.modalidad==='cepas'?'fr2':'fr2 hidden'}">
+    <div class="fg"><label class="fl">Cepas</label><input type="number" id="eb-cep" value="${b.cepas||0}"></div>
+    <div class="fg"><label class="fl">Objetivo</label><input type="number" id="eb-obj" value="${b.obj_cepas||0}"></div>
+  </div>
+  <div id="eb-kg" class="${b.modalidad==='kg'?'fr2':'fr2 hidden'}">
+    <div class="fg"><label class="fl">Cantidad</label><input type="number" id="eb-kgv" value="${b.kg||0}"></div>
+    <div class="fg"><label class="fl">Unidad</label><select id="eb-kgu"><option value="kg" ${b.unidad==='kg'?'selected':''}>Kg</option><option value="t" ${b.unidad==='t'?'selected':''}>Toneladas</option></select></div>
+  </div>
+  <div class="fg"><label class="fl">Observaciones</label><textarea id="eb-obs" rows="2">${b.obs||''}</textarea></div>
+  <div style="display:flex;gap:8px;margin-top:12px">
+    <button class="btn btn-g" id="eb-btn" onclick="guardarEdicionBitacora(${id})"><i class="ti ti-check"></i> Guardar cambios</button>
+    <button class="btn" onclick="closeModal()">Cancelar</button>
+  </div>`);
+}
+
+function togEBMod(){
+  const v=document.getElementById('eb-mod').value;
+  document.getElementById('eb-cepas').classList.toggle('hidden',v!=='cepas');
+  document.getElementById('eb-kg').classList.toggle('hidden',v!=='kg');
+}
+
+async function guardarEdicionBitacora(id){
+  const btn=document.getElementById('eb-btn');btn.disabled=true;btn.innerHTML='<div class="spinner"></div>';
+  const mod=document.getElementById('eb-mod').value;
+  const body={
+    fecha:document.getElementById('eb-fecha').value,
+    cid:parseInt(document.getElementById('eb-cid').value),
+    servicio:document.getElementById('eb-svc').value,
+    modalidad:mod,
+    jid:parseInt(document.getElementById('eb-jid').value),
+    nw:parseInt(document.getElementById('eb-nw').value)||0,
+    horas:parseFloat(document.getElementById('eb-h').value)||0,
+    cepas:parseInt(document.getElementById('eb-cep')?.value)||0,
+    kg:parseFloat(document.getElementById('eb-kgv')?.value)||0,
+    unidad:document.getElementById('eb-kgu')?.value||'kg',
+    obs:document.getElementById('eb-obs').value
+  };
+  try{
+    await sbPatch('bitacora',id,body);
+    const idx=DB.bitacora.findIndex(b=>b.id===id);
+    if(idx>=0)Object.assign(DB.bitacora[idx],body);
+    closeModal();render('bitacora');
+  }catch(e){btn.disabled=false;btn.innerHTML='<i class="ti ti-check"></i> Guardar cambios';alert('Error: '+e.message);}
+}
+
+// ─── CALENDARIO ───
+function rCalendario(c,pt,tb){
+  pt.textContent='Calendario';
+  const now=new Date();window._cY=now.getFullYear();window._cM=now.getMonth();
+  c.innerHTML=`<div class="mes-sel"><button class="btn btn-sm" onclick="cNav(-1)"><i class="ti ti-arrow-left"></i></button><select id="c-mes" onchange="cGo()">${Array.from({length:12},(_,i)=>`<option value="${i}" ${i===now.getMonth()?'selected':''}>${['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'][i]}</option>`).join('')}</select><select id="c-yr" onchange="cGo()">${[2024,2025,2026,2027].map(y=>`<option ${y===now.getFullYear()?'selected':''}>${y}</option>`).join('')}</select><button class="btn btn-sm" onclick="cNav(1)"><i class="ti ti-arrow-right"></i></button></div><div id="cal-cnt"></div>`;
+  renderCalMes();
+}
+function cNav(d){window._cM+=d;if(window._cM>11){window._cM=0;window._cY++;}if(window._cM<0){window._cM=11;window._cY--;}document.getElementById('c-mes').value=window._cM;document.getElementById('c-yr').value=window._cY;renderCalMes();}
+function cGo(){window._cM=parseInt(document.getElementById('c-mes').value);window._cY=parseInt(document.getElementById('c-yr').value);renderCalMes();}
+function renderCalMes(){
+  const y=window._cY;const m=window._cM;
+  const firstDay=(new Date(y,m,1).getDay()+6)%7;
+  const dim=new Date(y,m+1,0).getDate();
+  const todayStr=today();
+  const evMap={};
+  DB.bitacora.forEach(b=>{if(!evMap[b.fecha])evMap[b.fecha]=[];evMap[b.fecha].push({text:getCl(b.cid).nombre.replace('Château ','Ch. '),cls:'ev-g'});});
+  DB.kanban.filter(k=>k.columna!=='terminado').forEach(k=>{if(!evMap[k.fecha_prevista])evMap[k.fecha_prevista]=[];evMap[k.fecha_prevista].push({text:k.titulo.split('—')[0].trim(),cls:'ev-a'});});
+  const days=['Lun','Mar','Mié','Jue','Vie','Sáb'];
+  let cells='';
+  for(let i=0;i<firstDay&&firstDay<7;i++)cells+=`<div style="min-height:60px"></div>`;
+  for(let d=1;d<=dim;d++){
+    const dow=new Date(y,m,d).getDay();if(dow===0)continue;
+    const ds=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const evs=evMap[ds]||[];const isToday=ds===todayStr;
+    cells+=`<div style="min-height:60px;border:1px solid var(--border);border-radius:5px;padding:4px;background:var(--bg)${isToday?';border-color:var(--g);border-width:2px':''}">
+      <div style="font-size:11px;font-weight:600;margin-bottom:2px;color:${isToday?'var(--g)':'var(--text2)'}">${d}</div>
+      ${evs.slice(0,2).map(e=>`<div style="font-size:9px;padding:1px 4px;border-radius:3px;margin-bottom:2px;background:${e.cls==='ev-g'?'var(--gl)':'var(--al)'};color:${e.cls==='ev-g'?'var(--gd)':'#633806'};overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${e.text}</div>`).join('')}
+      ${evs.length>2?`<div style="font-size:9px;color:var(--text3)">+${evs.length-2}</div>`:''}
+    </div>`;
+  }
+  document.getElementById('cal-cnt').innerHTML=`<div class="card"><div style="display:grid;grid-template-columns:repeat(6,1fr);gap:3px">${days.map(d=>`<div style="text-align:center;font-size:11px;font-weight:600;color:var(--text2);padding:3px 0">${d}</div>`).join('')}${cells}</div></div>`;
+}
+
+// ─── CRM ───
+function rCRM(c,pt,tb){
+  pt.textContent='CRM — Clientes';
+  tb.innerHTML=`<button class="btn btn-g btn-sm" onclick="openClModal()"><i class="ti ti-plus"></i> Nuevo cliente</button>`;
+  c.innerHTML=`<div class="g3">${DB.clientes.map(cl=>{
+    const bits=DB.bitacora.filter(b=>b.cid===cl.id);
+    const i=bits.reduce((a,b)=>a+calcI(b),0);const co=bits.reduce((a,b)=>a+calcC(b),0);
+    const m=i>0?Math.round((i-co)/i*100):0;
+    const nSvcs=DB.servicios.filter(s=>s.cid===cl.id&&s.activo).length;
+    const esFermage=cl.tipo&&cl.tipo.toLowerCase().includes('fermage');
+    return`<div class="card" style="margin-bottom:0">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:9px">
+        <div><div style="font-weight:600;font-size:14px">${cl.nombre}</div><div style="margin-top:3px">${zBadge(cl.zona)}</div></div>
+        ${esFermage?'<span class="badge fermage-badge">🌿 Fermage</span>':'<span class="badge bgr">Cliente</span>'}
+      </div>
+      <table style="font-size:12px;margin-bottom:7px">
+        <tr><td style="color:var(--text2);padding:2px 0"><i class="ti ti-user"></i></td><td style="padding:2px 0 2px 6px">${cl.contacto||'—'}</td></tr>
+        <tr><td style="color:var(--text2);padding:2px 0"><i class="ti ti-mail"></i></td><td style="padding:2px 0 2px 6px">${cl.email||'—'}</td></tr>
+        <tr><td style="color:var(--text2);padding:2px 0"><i class="ti ti-receipt"></i></td><td style="padding:2px 0 2px 6px">${nSvcs} servicios activos</td></tr>
+        ${esFermage&&cl.hectareas?`<tr><td style="color:var(--text2);padding:2px 0"><i class="ti ti-plant"></i></td><td style="padding:2px 0 2px 6px">${cl.hectareas} ha</td></tr>`:''}
+      </table>
+      ${cl.notas?`<div style="font-size:12px;color:var(--text2);background:var(--bg2);padding:5px 7px;border-radius:5px;margin-bottom:7px">${cl.notas}</div>`:''}
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px">
+        <span style="font-size:12px;color:var(--text2)">Facturado: <strong>${eur(i)}</strong></span>
+        ${i>0?mgBadge(m):'<span class="badge bgr">Sin datos</span>'}
+      </div>
+      <div style="display:flex;gap:5px">
+        <button class="btn btn-sm btn-g" style="flex:1" onclick="openTarCl(${cl.id},'${cl.nombre.replace(/'/g,"\\'")}')"><i class="ti ti-edit"></i> Tarifas</button>
+        <button class="btn btn-sm btn-r" onclick="delCl(${cl.id})"><i class="ti ti-trash"></i></button>
+      </div>
+    </div>`;
+  }).join('')}</div>`;
+}
+
+function openClModal(){
+  showModal(`<div class="modal-t">Nuevo cliente <span onclick="closeModal()" style="cursor:pointer;color:var(--text3)"><i class="ti ti-x"></i></span></div>
+  <div class="fr2"><div class="fg"><label class="fl">Nombre</label><input type="text" id="nc-n"></div><div class="fg"><label class="fl">Zona</label><select id="nc-z"><option>Saint-Émilion</option><option>Pomerol</option><option>Fronsac</option></select></div></div>
+  <div class="fr2"><div class="fg"><label class="fl">Tipo</label><select id="nc-tp" onchange="togFermage()"><option>Grand Cru Classé</option><option>Grand Vin</option><option>Cru Bourgeois</option><option value="fermage">🌿 Fermage (parcela propia)</option><option>Coopérative</option><option>Propriété</option></select></div>
+  <div class="fg" id="ha-field" style="display:none"><label class="fl">Hectáreas</label><input type="number" id="nc-ha" placeholder="ej: 5.5" step="0.1"></div></div>
+  <div class="fr2"><div class="fg"><label class="fl">Contacto</label><input type="text" id="nc-c"></div><div class="fg"><label class="fl">Tel</label><input type="text" id="nc-t"></div></div>
+  <div class="fg"><label class="fl">Email</label><input type="email" id="nc-e"></div>
+  <div class="fg"><label class="fl">Notas</label><textarea id="nc-no" rows="2"></textarea></div>
+  <div style="display:flex;gap:7px;margin-top:11px"><button class="btn btn-g" id="nc-btn" onclick="saveCl()"><i class="ti ti-check"></i> Guardar</button><button class="btn" onclick="closeModal()">Cancelar</button></div>`);
+}
+function togFermage(){const v=document.getElementById('nc-tp').value;document.getElementById('ha-field').style.display=v==='fermage'?'flex':'none';}
+async function delCl(id){if(!confirm('¿Eliminar cliente?'))return;try{await sbDelete('clientes',id);DB.clientes=DB.clientes.filter(c=>c.id!==id);render('clientes');}catch(e){alert('No se puede eliminar si tiene registros asociados.');}}
+async function saveCl(){
+  const btn=document.getElementById('nc-btn');btn.disabled=true;btn.innerHTML='<div class="spinner"></div>';
+  const ST=[{n:'Poda Guyot Simple',t:'ambos'},{n:'Poda Guyot Doble',t:'ambos'},{n:'Poda Cordon',t:'ambos'},{n:'Poda Formacion',t:'ambos'},{n:'Poda planta',t:'ambos'},{n:'Taille de respect',t:'ambos'},{n:'Tirage de bois',t:'ambos'},{n:'Tirage de bois simple',t:'ambos'},{n:'Tirage de bois doble',t:'ambos'},{n:'Pliage',t:'ambos'},{n:'Pliage simple',t:'ambos'},{n:'Pliage doble',t:'ambos'},{n:'Calage',t:'ambos'},{n:'Carrasonage',t:'ambos'},{n:'Levage',t:'horas'},{n:'Relevage',t:'horas'},{n:'Épamprage tete et jambe',t:'ambos'},{n:'Épamprage tete',t:'ambos'},{n:'Dedoublage',t:'ambos'},{n:'Épamprage jambe',t:'ambos'},{n:'Echardage',t:'ambos'},{n:'Effeuiage',t:'ambos'},{n:'Rognage manuel',t:'horas'},{n:'Jardineria',t:'horas'},{n:'Vendanges vertes',t:'ambos'},{n:'Trabajos viticolas',t:'horas'},{n:'Vendimia Coupeur',t:'kg'},{n:'Vendimia Porteur',t:'kg'},{n:'Vendimia resepcion',t:'kg'},{n:'Bodega',t:'horas'}];
+  const body={nombre:document.getElementById('nc-n').value,zona:document.getElementById('nc-z').value,contacto:document.getElementById('nc-c').value,email:document.getElementById('nc-e').value,tel:document.getElementById('nc-t').value,tipo:document.getElementById('nc-tp').value,hectareas:parseFloat(document.getElementById('nc-ha')?.value)||null,notas:document.getElementById('nc-no').value,activo:true};
+  try{
+    const res=await sbPost('clientes',body);const nCl=Array.isArray(res)?res[0]:res;
+    const svcsToAdd=ST.map(s=>({cid:nCl.id,servicio:s.n,tipo:s.t,precio_hora:24,precio_cepa:s.t==='kg'?0:2.0,precio_kg:s.servicio==='Vendimia Porteur'?0.35:s.t==='kg'?0.3:0,precio_t:s.t==='kg'?300:0,activo:true}));
+    await sbPost('servicios_cliente',svcsToAdd);
+    await loadAll();closeModal();render('clientes');
+  }catch(e){btn.disabled=false;btn.innerHTML='Reintentar';alert('Error: '+e.message);}
+}
+
+// ─── FERMAGES ───
+function rFermages(c,pt,tb){
+  pt.textContent='Fermages';
+  tb.innerHTML=`<button class="btn btn-g btn-sm" onclick="openClModal()"><i class="ti ti-plus"></i> Añadir fermage</button>`;
+  const fermages=DB.clientes.filter(cl=>cl.tipo&&cl.tipo.toLowerCase().includes('fermage'));
+  const totalHa=fermages.reduce((a,f)=>a+(f.hectareas||0),0);
+  c.innerHTML=`
+  <div class="g3" style="margin-bottom:13px">
+    <div class="mc"><div class="mc-l">Total parcelas fermage</div><div class="mc-v">${fermages.length}</div></div>
+    <div class="mc"><div class="mc-l">Total hectáreas</div><div class="mc-v">${totalHa.toFixed(1)} ha</div></div>
+    <div class="mc"><div class="mc-l">Cooperativas</div><div class="mc-v">3</div><div class="mc-s">Saint-Émilion y zona</div></div>
+  </div>
+  <div class="alert al-g"><i class="ti ti-info-circle"></i> Las parcelas en fermage son de vuestra propiedad/arrendamiento. Los ingresos vienen de las cooperativas, no se facturan a clientes externos.</div>
+  <div class="card"><div class="ct">Parcelas en fermage</div>
+  ${fermages.length?`<div class="tbl-wrap"><table><thead><tr><th>Nombre/Parcela</th><th>Zona</th><th>Hectáreas</th><th>Notas</th><th></th></tr></thead><tbody>
+  ${fermages.map(f=>`<tr><td><strong>${f.nombre}</strong></td><td>${zBadge(f.zona)}</td><td><span class="badge bg">${f.hectareas||'—'} ha</span></td><td style="font-size:12px;color:var(--text2)">${f.notas||'—'}</td><td><button class="btn btn-sm btn-r" onclick="delCl(${f.id})"><i class="ti ti-trash"></i></button></td></tr>`).join('')}
+  </tbody></table></div>`:'<div class="empty">Sin fermages registrados. Añade uno con el botón de arriba seleccionando tipo "Fermage".</div>'}
+  </div>`;
+}
+
+// ─── TARIFAS ───
+function openTarCl(cid,nombre){
+  const svcs=DB.servicios.filter(s=>s.cid===cid);
+  let rows='';
+  svcs.forEach(s=>{
+    const ph=s.tipo==='horas'||s.tipo==='ambos'?'<input type="number" value="'+( s.precio_hora||0)+'" step="0.5" id="sh-'+s.id+'" style="width:68px" onblur="saveSvcAuto('+s.id+')">':'-';
+    const pc=s.tipo==='ambos'?'<input type="number" value="'+(s.precio_cepa||0)+'" step="0.01" id="sc-'+s.id+'" style="width:68px" onblur="saveSvcAuto('+s.id+')">':'-';
+    const pk=s.tipo==='kg'?'<input type="number" value="'+(s.precio_kg||0)+'" step="0.01" id="sk-'+s.id+'" style="width:63px" onblur="saveSvcAuto('+s.id+')">':'-';
+    const pt=s.tipo==='kg'?'<input type="number" value="'+(s.precio_t||0)+'" step="1" id="st-'+s.id+'" style="width:68px" onblur="saveSvcAuto('+s.id+')">':'-';
+    const nc=nombre.replace(/'/g,"\\'");
+    rows+='<div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr auto;gap:4px;align-items:center;padding:6px 0;border-bottom:1px solid var(--border);font-size:12px">'
+      +'<div style="font-weight:500;color:'+(s.activo?'var(--text)':'var(--text3)')+'">'+s.servicio+'</div>'
+      +'<div>'+ph+'</div>'
+      +'<div>'+pc+'</div>'
+      +'<div>'+pk+'</div>'
+      +'<div>'+pt+'</div>'
+      +'<div style="display:flex;gap:3px;align-items:center">'
+        +'<span id="svc-ok-'+s.id+'" style="color:#4ade80;font-size:14px;display:none">✓</span>'
+        +'<button class="btn btn-sm" onclick="togSvc('+s.id+','+s.activo+','+cid+',\''+nc+'\')"><i class="ti '+(s.activo?'ti-eye-off':'ti-eye')+'"></i></button>'
+      +'</div>'
+    +'</div>';
+  });
+  const nc2=nombre.replace(/'/g,"\\'");
+  showModal('<div class="modal-t"><div>Tarifas — <strong>'+nombre+'</strong></div>'
+    +'<span onclick="closeModal()" style="cursor:pointer;color:var(--text3)"><i class="ti ti-x"></i></span></div>'
+    +'<div class="alert al-g" style="margin-bottom:10px"><i class="ti ti-device-floppy"></i> Autoguardado al salir de cada campo. O usa "Guardar todas".</div>'
+    +'<div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr auto;gap:4px;padding:3px 0 7px;border-bottom:1px solid var(--border);margin-bottom:3px">'
+      +'<div style="font-size:10px;font-weight:600;color:var(--text2)">Servicio</div>'
+      +'<div style="font-size:10px;font-weight:600;color:var(--text2)">€/hora</div>'
+      +'<div style="font-size:10px;font-weight:600;color:var(--text2)">€/cepa</div>'
+      +'<div style="font-size:10px;font-weight:600;color:var(--text2)">€/kg</div>'
+      +'<div style="font-size:10px;font-weight:600;color:var(--text2)">€/ton</div>'
+      +'<div></div>'
+    +'</div>'
+    +'<div style="max-height:50vh;overflow-y:auto">'+rows+'</div>'
+    +'<div style="margin-top:11px;display:flex;gap:7px">'
+      +'<button class="btn btn-g" onclick="guardarTodasTarifas('+cid+',\''+nc2+'\')"><i class="ti ti-device-floppy"></i> Guardar todas</button>'
+      +'<button class="btn" onclick="closeModal()">Cerrar</button>'
+    +'</div>');
+}
+
+async function saveSvcAuto(id){
+  const body={};
+  const h=document.getElementById('sh-'+id);const ce=document.getElementById('sc-'+id);
+  const kg=document.getElementById('sk-'+id);const t=document.getElementById('st-'+id);
+  if(h)body.precio_hora=parseFloat(h.value)||0;
+  if(ce)body.precio_cepa=parseFloat(ce.value)||0;
+  if(kg)body.precio_kg=parseFloat(kg.value)||0;
+  if(t)body.precio_t=parseFloat(t.value)||0;
+  if(!Object.keys(body).length)return;
+  try{
+    await sbPatch('servicios_cliente',id,body);
+    const s=DB.servicios.find(x=>x.id===id);if(s)Object.assign(s,body);
+    const ok=document.getElementById('svc-ok-'+id);
+    if(ok){ok.style.display='inline';setTimeout(()=>ok.style.display='none',2000);}
+  }catch(e){console.error('Error tarifa:',e);}
+}
+
+async function guardarTodasTarifas(cid,nombre){
+  const svcs=DB.servicios.filter(s=>s.cid===cid);
+  for(const s of svcs){await saveSvcAuto(s.id);}
+  alert('Todas las tarifas guardadas para '+nombre);
+}
+
+async function togSvc(id,activo,cid,nombre){await sbPatch('servicios_cliente',id,{activo:!activo});const s=DB.servicios.find(x=>x.id===id);if(s)s.activo=!activo;openTarCl(cid,nombre);}
+
+
+
+
+// ─── TRABAJADORES ───
+function rTrabajadores(c,pt,tb){
+  pt.textContent='Personal';
+  tb.innerHTML=`<button class="btn btn-g btn-sm" onclick="openWModal()"><i class="ti ti-plus"></i> Añadir</button>`;
+  c.innerHTML=`
+  <div class="g3" style="margin-bottom:11px">
+    <div class="mc"><div class="mc-l">Total activos</div><div class="mc-v">${DB.trabajadores.filter(t=>t.activo).length}</div></div>
+    <div class="mc"><div class="mc-l">Coste est. mensual</div><div class="mc-v">${eur(DB.trabajadores.filter(t=>t.activo).length*COSTE*160)}</div><div class="mc-s">A ${COSTE}€/h · 160h</div></div>
+    <div class="mc"><div class="mc-l">Jefes de equipo</div><div class="mc-v">${DB.trabajadores.filter(t=>t.tipo==='jefe').length}</div></div>
+  </div>
+  <div class="card"><div class="tbl-wrap"><table><thead><tr><th>Nombre</th><th>Tipo</th><th>Estado</th><th>Acciones</th></tr></thead><tbody>
+  ${DB.trabajadores.map(w=>{
+    const tipos=['fijo','temporero','vendimia','jefe'];
+    const tipoOpts=tipos.map(t=>'<option value="'+t+'" '+(w.tipo===t?'selected':'')+'>'+{fijo:'Fijo',temporero:'Temporero',vendimia:'Vendimia',jefe:'Jefe de equipo'}[t]+'</option>').join('');
+    return`<tr>
+      <td><div style="display:flex;align-items:center;gap:6px"><div class="av">${w.nombre.split(' ').map(n=>n[0]).join('')}</div>${w.nombre}</div></td>
+      <td>
+        <select style="font-size:11px;padding:3px 6px;border-radius:5px;border:1px solid var(--border2);background:var(--bg);color:var(--text);cursor:pointer" onchange="cambiarTipo(${w.id},this.value)">
+          ${tipoOpts}
+        </select>
+      </td>
+      <td><span class="badge ${w.activo?'bg':'br'}">${w.activo?'Activo':'Inactivo'}</span></td>
+      <td style="display:flex;gap:4px">
+        <button class="btn btn-sm" onclick="togW(${w.id},${w.activo})">${w.activo?'Desactivar':'Activar'}</button>
+        <button class="btn btn-sm btn-r" onclick="delW(${w.id})"><i class="ti ti-trash"></i></button>
+      </td>
+    </tr>`;
+  }).join('')}
+  </tbody></table></div></div>`;
+}
+async function togW(id,activo){await sbPatch('trabajadores',id,{activo:!activo});const w=DB.trabajadores.find(t=>t.id===id);if(w)w.activo=!activo;render('trabajadores');}
+async function cambiarTipo(id,tipo){
+  try{
+    await sbPatch('trabajadores',id,{tipo});
+    const w=DB.trabajadores.find(t=>t.id===id);if(w)w.tipo=tipo;
+    // Si pasa a jefe, verificar que tenga usuario en tabla usuarios
+    if(tipo==='jefe'){
+      const w2=DB.trabajadores.find(t=>t.id===id);
+      const usuExiste=DB.usuarios.find(u=>(u.nombre||'').toLowerCase()===(w2?.nombre||'').toLowerCase());
+      if(!usuExiste){
+        alert('✅ Tipo actualizado a Jefe.\n\n⚠️ Recuerda crear un usuario en Supabase → tabla "usuarios" para que pueda acceder a la app con rol "jefe".');
+      }
+    }
+  }catch(e){alert('Error: '+e.message);}
+}
+async function delW(id){if(!confirm('¿Eliminar?'))return;try{await sbDelete('trabajadores',id);DB.trabajadores=DB.trabajadores.filter(t=>t.id!==id);render('trabajadores');}catch(e){alert('No se puede eliminar si tiene registros. Desactívalo.');}}
+function openWModal(){
+  showModal(`<div class="modal-t">Nuevo trabajador <span onclick="closeModal()" style="cursor:pointer;color:var(--text3)"><i class="ti ti-x"></i></span></div>
+  <div class="fr2"><div class="fg"><label class="fl">Nombre completo</label><input type="text" id="nw-n"></div><div class="fg"><label class="fl">Tipo</label><select id="nw-t"><option value="jefe">Jefe de equipo</option><option value="fijo">Fijo</option><option value="temporero">Temporero</option><option value="vendimia">Vendimia</option></select></div></div>
+  <div style="display:flex;gap:7px;margin-top:11px"><button class="btn btn-g" id="nw-btn" onclick="saveW()"><i class="ti ti-check"></i> Guardar</button><button class="btn" onclick="closeModal()">Cancelar</button></div>`);
+}
+async function saveW(){
+  const btn=document.getElementById('nw-btn');btn.disabled=true;btn.innerHTML='<div class="spinner"></div>';
+  const body={nombre:document.getElementById('nw-n').value,tipo:document.getElementById('nw-t').value,coste:COSTE,activo:true};
+  try{const res=await sbPost('trabajadores',body);DB.trabajadores.push(Array.isArray(res)?res[0]:res);closeModal();render('trabajadores');}
+  catch(e){btn.disabled=false;btn.innerHTML='Reintentar';alert('Error: '+e.message);}
+}
+
+// ─── HORAS ───
+function rHoras(c,pt,tb){
+  pt.textContent='Control de horas mensual';
+  tb.innerHTML=`<button class="btn btn-sm" onclick="exportHoras()"><i class="ti ti-download"></i> CSV</button>`;
+  const now=new Date();window._hY=now.getFullYear();window._hM=now.getMonth();
+  c.innerHTML=`<div class="mes-sel"><button class="btn btn-sm" onclick="hNav(-1)"><i class="ti ti-arrow-left"></i></button><select id="h-mes" onchange="hGo()">${Array.from({length:12},(_,i)=>`<option value="${i}" ${i===now.getMonth()?'selected':''}>${['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'][i]}</option>`).join('')}</select><select id="h-yr" onchange="hGo()">${[2024,2025,2026,2027].map(y=>`<option ${y===now.getFullYear()?'selected':''}>${y}</option>`).join('')}</select><button class="btn btn-sm" onclick="hNav(1)"><i class="ti ti-arrow-right"></i></button></div><div id="horas-cnt"></div>`;
+  renderHorasMes();
+}
+function hNav(d){window._hM+=d;if(window._hM>11){window._hM=0;window._hY++;}if(window._hM<0){window._hM=11;window._hY--;}document.getElementById('h-mes').value=window._hM;document.getElementById('h-yr').value=window._hY;renderHorasMes();}
+function hGo(){window._hM=parseInt(document.getElementById('h-mes').value);window._hY=parseInt(document.getElementById('h-yr').value);renderHorasMes();}
+function renderHorasMes(){
+  const y=window._hY;const m=window._hM;
+  const dim=new Date(y,m+1,0).getDate();
+  const workers=DB.trabajadores.filter(t=>t.activo);
+  const labDays=[];
+  for(let d=1;d<=dim;d++){const dow=new Date(y,m,d).getDay();if(dow!==0)labDays.push(d);}
+  const dn=['D','L','M','X','J','V','S'];
+  const dHead=labDays.map(d=>{
+    const dow=new Date(y,m,d).getDay();
+    const ds=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const isToday=ds===today();
+    return`<th style="min-width:38px;text-align:center;font-size:9px${isToday?';color:var(--g);font-weight:700':''}"><div>${dn[dow]}</div><div>${d}</div></th>`;
+  }).join('');
+
+  let totalGenH=0;let totalGenHe=0;
+  const rows=workers.map(w=>{
+    let tH=0;let tHe=0;let dT=0;let dA=0;
+    const cells=labDays.map(d=>{
+      const ds=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+      const hr=DB.horas.find(h=>h.trabajador_id===w.id&&h.fecha===ds);
+      const h=hr?parseFloat(hr.horas_normal)||0:0;
+      const he=hr?parseFloat(hr.horas_extra)||0:0;
+      const aus=hr?hr.ausente:false;
+      if(aus){dA++;
+        return`<td style="text-align:center;background:#FCEBEB;cursor:pointer;padding:2px" onclick="editCelda(${w.id},'${ds}',true)" title="Clic para editar">
+          <span style="color:#E24B4A;font-size:10px;font-weight:600">A</span>
+        </td>`;}
+      if(h>0||he>0){tH+=h;tHe+=he;dT++;
+        return`<td style="text-align:center;cursor:pointer;padding:2px;background:var(--gl)" onclick="editCelda(${w.id},'${ds}',false,${h},${he})" title="Clic para editar">
+          <div style="font-weight:600;font-size:10px;color:var(--gd)">${h}h</div>
+          ${he>0?`<div style="font-size:9px;color:var(--gold)">${he}+</div>`:''}
+        </td>`;}
+      return`<td style="text-align:center;cursor:pointer;padding:2px;color:var(--text3)" onclick="editCelda(${w.id},'${ds}',false,0,0)" title="Clic para añadir horas">
+        <span style="font-size:10px">—</span>
+      </td>`;
+    }).join('');
+    const costTotal=(tH+tHe)*COSTE;totalGenH+=tH;totalGenHe+=tHe;
+    return`<tr>
+      <td style="white-space:nowrap;font-weight:500;position:sticky;left:0;background:var(--bg);z-index:1;font-size:12px;min-width:130px">
+        <div style="display:flex;align-items:center;gap:5px">
+          <div class="av">${w.nombre.split(' ').map(n=>n[0]).join('')}</div>
+          ${w.nombre}
+        </div>
+      </td>
+      <td>${tBadge(w.tipo)}</td>
+      ${cells}
+      <td style="text-align:center;font-weight:700;color:var(--g);font-size:12px" id="tot-h-${w.id}">${tH}h</td>
+      <td style="text-align:center;font-weight:700;color:var(--gold);font-size:12px" id="tot-he-${w.id}">${tHe}h</td>
+      <td style="text-align:center;font-weight:600" id="tot-d-${w.id}">${dT}</td>
+      <td style="text-align:center;color:#E24B4A" id="tot-a-${w.id}">${dA}</td>
+      <td style="text-align:right;font-weight:600" id="tot-c-${w.id}">${eur(costTotal)}</td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('horas-cnt').innerHTML=`
+  <div class="g3" style="margin-bottom:11px">
+    <div class="mc"><div class="mc-l">Total horas normales</div><div class="mc-v" id="tot-gen-h">${totalGenH}h</div></div>
+    <div class="mc"><div class="mc-l">Total horas extra</div><div class="mc-v" id="tot-gen-he" style="color:var(--gold)">${totalGenHe}h</div></div>
+    <div class="mc"><div class="mc-l">Coste total MO</div><div class="mc-v">${eur((totalGenH+totalGenHe)*COSTE)}</div></div>
+  </div>
+  <div class="alert al-g" style="margin-bottom:10px"><i class="ti ti-edit"></i> Clic en cualquier celda para editar las horas. Los cambios se guardan automáticamente y afectan a facturación y dashboard.</div>
+  <div class="card"><div class="tbl-wrap"><table>
+    <thead><tr>
+      <th style="position:sticky;left:0;background:var(--bg);z-index:2;min-width:130px">Trabajador</th>
+      <th>Tipo</th>
+      ${dHead}
+      <th style="text-align:center">H.norm</th>
+      <th style="text-align:center">H.ext</th>
+      <th style="text-align:center">Días</th>
+      <th style="text-align:center">Aus.</th>
+      <th style="text-align:right">Coste</th>
+    </tr></thead>
+    <tbody>${rows||'<tr><td colspan="20" class="empty">Sin datos para este mes.</td></tr>'}</tbody>
+  </table></div></div>`;
+}
+
+function editCelda(wid, fecha, ausente, h=0, he=0){
+  if(h===0&&he===0&&!ausente)h=7; // default 7h
+  const w=DB.trabajadores.find(t=>t.id===wid);if(!w)return;
+  const d=new Date(fecha);
+  const label=d.toLocaleDateString('es-ES',{weekday:'long',day:'numeric',month:'long'});
+  showModal(`<div class="modal-t">
+    <div>
+      <div style="font-weight:700">${w.nombre}</div>
+      <div style="font-size:11px;color:var(--text2)">${label}</div>
+    </div>
+    <span onclick="closeModal()" style="cursor:pointer;color:var(--text3)"><i class="ti ti-x"></i></span>
+  </div>
+  <div class="alert al-gold" style="margin-bottom:12px"><i class="ti ti-edit"></i> Edita las horas de este trabajador para este día. El cambio afecta a facturación y dashboard.</div>
+  <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
+    <input type="checkbox" id="cel-aus" ${ausente?'checked':''} style="width:auto" onchange="togCelAus()">
+    <label style="font-size:13px;font-weight:500">Marcar como ausente</label>
+  </div>
+  <div id="cel-horas-fields" style="${ausente?'display:none':''}">
+    <div class="fr2">
+      <div class="fg">
+        <label class="fl">Horas normales</label>
+        <input type="number" id="cel-h" value="${h||7}" min="0" max="16" step="0.5" style="text-align:center">
+      </div>
+      <div class="fg">
+        <label class="fl">Horas extra</label>
+        <input type="number" id="cel-he" value="${he}" min="0" max="8" step="0.5" style="text-align:center">
+      </div>
+    </div>
+    <div style="background:var(--bg2);border-radius:var(--radius);padding:8px 12px;font-size:12px;color:var(--text2)">
+      <i class="ti ti-calculator"></i> Coste estimado: <strong id="cel-coste">${eur((h+he)*COSTE)}</strong>
+    </div>
+  </div>
+  <div style="display:flex;gap:8px;margin-top:14px">
+    <button class="btn btn-g" id="cel-btn" onclick="guardarCelda(${wid},'${fecha}')"><i class="ti ti-check"></i> Guardar</button>
+    ${h>0||he>0||ausente?`<button class="btn btn-r" onclick="borrarCelda(${wid},'${fecha}')"><i class="ti ti-trash"></i> Borrar día</button>`:''}
+    <button class="btn" onclick="closeModal()">Cancelar</button>
+  </div>`);
+
+  // Actualizar coste en tiempo real
+  ['cel-h','cel-he'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el)el.addEventListener('input',()=>{
+      const ch=parseFloat(document.getElementById('cel-h').value)||0;
+      const che=parseFloat(document.getElementById('cel-he').value)||0;
+      const cc=document.getElementById('cel-coste');
+      if(cc)cc.textContent=eur((ch+che)*COSTE);
+    });
+  });
+}
+
+function togCelAus(){
+  const aus=document.getElementById('cel-aus').checked;
+  document.getElementById('cel-horas-fields').style.display=aus?'none':'';
+}
+
+async function guardarCelda(wid, fecha){
+  const btn=document.getElementById('cel-btn');btn.disabled=true;btn.innerHTML='<div class="spinner"></div>';
+  const aus=document.getElementById('cel-aus')?.checked||false;
+  const h=aus?0:parseFloat(document.getElementById('cel-h')?.value)||0;
+  const he=aus?0:parseFloat(document.getElementById('cel-he')?.value)||0;
+  try{
+    const res=await sbUpsert('horas_diarias',{trabajador_id:wid,fecha,horas_normal:h,horas_extra:he,ausente:aus},'trabajador_id,fecha');
+    // Actualizar DB local
+    const idx=DB.horas.findIndex(x=>x.trabajador_id===wid&&x.fecha===fecha);
+    const newRec=Array.isArray(res)?res[0]:res;
+    if(idx>=0)DB.horas[idx]=newRec;else DB.horas.push(newRec);
+    closeModal();
+    renderHorasMes();
+  }catch(e){btn.disabled=false;btn.innerHTML='<i class="ti ti-check"></i> Guardar';alert('Error: '+e.message);}
+}
+
+async function borrarCelda(wid, fecha){
+  if(!confirm('¿Borrar el registro de este día?'))return;
+  try{
+    await fetch(`${SB}/rest/v1/horas_diarias?trabajador_id=eq.${wid}&fecha=eq.${fecha}`,{method:'DELETE',headers:SH});
+    DB.horas=DB.horas.filter(x=>!(x.trabajador_id===wid&&x.fecha===fecha));
+    closeModal();renderHorasMes();
+  }catch(e){alert('Error: '+e.message);}
+}
+
+// ─── FACTURACIÓN ───
+function rTarifas(c,pt,tb){
+  pt.textContent='Servicios y tarifas';
+  const rows=DB.clientes.map(cl=>{
+    const svcs=DB.servicios.filter(s=>s.cid===cl.id);
+    const esFermage=cl.tipo&&cl.tipo.includes('fermage');
+    return`<tr>
+      <td><strong>${cl.nombre}</strong></td>
+      <td>${zBadge(cl.zona)}</td>
+      <td>${esFermage?'<span class="badge fermage-badge">🌿 Fermage</span>':'<span class="badge bgr">Cliente</span>'}</td>
+      <td><span class="badge bg">${svcs.filter(s=>s.activo).length} activos</span></td>
+      <td><button class="btn btn-sm btn-g" onclick="openTarCl(${cl.id},'${cl.nombre.replace(/'/g,"\\'")}')"><i class="ti ti-edit"></i> Editar tarifas</button></td>
+    </tr>`;
+  }).join('');
+  c.innerHTML=`
+  <div class="alert al-g" style="margin-bottom:12px"><i class="ti ti-info-circle"></i> Las tarifas se gestionan por cliente. Autoguardado al salir de cada campo.</div>
+  <div class="card">
+    <div class="ct">Tarifas por cliente</div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Cliente</th><th>Zona</th><th>Tipo</th><th>Servicios</th><th>Acción</th></tr></thead>
+      <tbody>${rows||'<tr><td colspan="5" class="empty">Sin clientes</td></tr>'}</tbody>
+    </table></div>
+  </div>`;
+}
+
+function rFacturacion(c,pt,tb){
+  pt.textContent='Facturación mensual';
+  tb.innerHTML=`<button class="btn btn-sm" onclick="exportFact()"><i class="ti ti-download"></i> CSV</button>`;
+  const res={};
+  DB.bitacora.forEach(b=>{if(!res[b.cid])res[b.cid]={i:0,co:0,h:0};res[b.cid].i+=calcI(b);res[b.cid].co+=calcC(b);res[b.cid].h+=b.horas||0;});
+  const tI=Object.values(res).reduce((a,r)=>a+r.i,0);const tC=Object.values(res).reduce((a,r)=>a+r.co,0);
+  c.innerHTML=`
+  <div class="g4" style="margin-bottom:12px">
+    <div class="mc"><div class="mc-l">Total a facturar</div><div class="mc-v">${eur(tI)}</div></div>
+    <div class="mc"><div class="mc-l">Coste MO</div><div class="mc-v">${eur(tC)}</div></div>
+    <div class="mc"><div class="mc-l">Beneficio</div><div class="mc-v" style="color:var(--g)">${eur(tI-tC)}</div></div>
+    <div class="mc"><div class="mc-l">Margen global</div><div class="mc-v" style="color:${tI>0&&(tI-tC)/tI>=0.3?'var(--g)':'#E24B4A'}">${tI>0?pct((tI-tC)/tI*100):'—'}</div></div>
+  </div>
+  <div class="card"><div class="tbl-wrap"><table><thead><tr><th>Cliente</th><th>Zona</th><th>Horas</th><th>Importe</th><th>Coste MO</th><th>Margen</th><th>Estado</th></tr></thead><tbody>
+  ${Object.entries(res).map(([cid,r])=>{const c2=getCl(parseInt(cid));const m=r.i>0?Math.round((r.i-r.co)/r.i*100):0;return`<tr><td><strong>${c2.nombre}</strong></td><td>${zBadge(c2.zona)}</td><td>${r.h}h</td><td><strong>${eur(r.i)}</strong></td><td>${eur(r.co)}</td><td>${mgBadge(m)}</td><td><span class="badge ba">Pendiente</span></td></tr>`;}).join('')||'<tr><td colspan="7" class="empty">Sin datos</td></tr>'}
+  </tbody></table></div></div>`;
+}
+
+// ─── RENTABILIDAD ───
+function rRentabilidad(c,pt,tb){
+  pt.textContent='Rentabilidad';
+  const byC=DB.clientes.filter(cl=>!cl.tipo||!cl.tipo.includes('fermage')).map(c2=>{const bits=DB.bitacora.filter(b=>b.cid===c2.id);const i=bits.reduce((a,b)=>a+calcI(b),0);const co=bits.reduce((a,b)=>a+calcC(b),0);return{nombre:c2.nombre,zona:c2.zona,i,co,m:i>0?Math.round((i-co)/i*100):0,j:bits.length};}).filter(x=>x.i>0).sort((a,b)=>b.m-a.m);
+  c.innerHTML=`<div class="card"><div class="ct">Por cliente</div>
+  ${byC.map(p=>`<div style="margin-bottom:9px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px"><span style="font-size:13px;font-weight:600">${p.nombre}</span><div style="display:flex;gap:5px;align-items:center">${zBadge(p.zona)}<span style="font-size:11px;color:var(--text2)">${eur(p.i)}</span>${mgBadge(p.m)}</div></div><div class="pbar"><div class="pfill ${p.m<20?'r':p.m<30?'w':''}" style="width:${Math.min(p.m*2.8,100)}%"></div></div></div>`).join('')||'<div class="empty">Sin datos</div>'}
+  </div>`;
+}
+
+// ─── INCIDENCIAS ───
+function rIncidencias(c,pt,tb){
+  pt.textContent='Incidencias';
+  tb.innerHTML=`<button class="btn btn-g btn-sm" onclick="openIncGerente()"><i class="ti ti-plus"></i> Nueva</button>`;
+  const total=DB.incidencias.reduce((a,i)=>a+(i.impacto||0),0);
+  c.innerHTML=`
+  <div class="g2" style="margin-bottom:11px">
+    <div class="mc"><div class="mc-l">Total incidencias</div><div class="mc-v">${DB.incidencias.length}</div></div>
+    <div class="mc"><div class="mc-l">Impacto económico</div><div class="mc-v" style="color:#E24B4A">${eur(total)}</div></div>
+  </div>
+  ${DB.incidencias.map(i=>`<div class="inc-item">
+    <div style="display:flex;align-items:center;gap:7px;margin-bottom:4px">
+      <span style="font-weight:600;font-size:13px">${i.tipo}</span>
+      <span class="badge bgr">${i.fecha}</span>
+      <span class="badge ba" style="margin-left:auto">${getCl(i.cid).nombre}</span>
+      ${i.reportado_por?`<span class="badge bb" style="font-size:9px">${i.reportado_por}</span>`:''}
+      <button class="btn btn-sm btn-r" onclick="delInc(${i.id})"><i class="ti ti-trash"></i></button>
+    </div>
+    <p style="font-size:13px;margin-bottom:3px">${i.descripcion||''}</p>
+    <span style="font-size:12px;color:#E24B4A">Impacto: ${i.impacto} €</span>
+  </div>`).join('')||'<div class="empty">Sin incidencias.</div>'}`;
+}
+function openIncGerente(){
+  const clOpts=DB.clientes.map(c=>`<option value="${c.id}">${c.nombre}</option>`).join('');
+  showModal(`<div class="modal-t">Nueva incidencia <span onclick="closeModal()" style="cursor:pointer;color:var(--text3)"><i class="ti ti-x"></i></span></div>
+  <div class="fr2"><div class="fg"><label class="fl">Fecha</label><input type="date" id="i-f" value="${today()}"></div><div class="fg"><label class="fl">Tipo</label><select id="i-t"><option>Clima adverso</option><option>Ausencia trabajador</option><option>Problema maquinaria</option><option>Accidente laboral</option><option>Problema con cliente</option><option>Retraso en trabajo</option><option>Otro</option></select></div></div>
+  <div class="fr2"><div class="fg"><label class="fl">Propiedad</label><select id="i-c">${clOpts}</select></div><div class="fg"><label class="fl">Impacto €</label><input type="number" id="i-i" placeholder="ej: -450"></div></div>
+  <div class="fg"><label class="fl">Descripción</label><textarea id="i-d" rows="3"></textarea></div>
+  <div style="display:flex;gap:7px;margin-top:11px"><button class="btn btn-g" id="i-btn" onclick="saveIncGerente()"><i class="ti ti-check"></i> Guardar</button><button class="btn" onclick="closeModal()">Cancelar</button></div>`);
+}
+async function saveIncGerente(){
+  const btn=document.getElementById('i-btn');btn.disabled=true;btn.innerHTML='<div class="spinner"></div>';
+  const body={fecha:document.getElementById('i-f').value,tipo:document.getElementById('i-t').value,cid:parseInt(document.getElementById('i-c').value),impacto:parseFloat(document.getElementById('i-i').value)||0,descripcion:document.getElementById('i-d').value,reportado_por:currentUser.nombre};
+  try{const res=await sbPost('incidencias',body);DB.incidencias.unshift(Array.isArray(res)?res[0]:res);closeModal();render('incidencias');}
+  catch(e){btn.disabled=false;btn.innerHTML='Reintentar';alert('Error: '+e.message);}
+}
+async function delInc(id){if(!confirm('¿Eliminar?'))return;await sbDelete('incidencias',id);DB.incidencias=DB.incidencias.filter(i=>i.id!==id);render('incidencias');}
+
+// ─── UTILS ───
+function showModal(html){document.getElementById('modal-container').innerHTML=`<div class="modal-bg" onclick="if(event.target===this)closeModal()"><div class="modal">${html}</div></div>`;}
+function closeModal(){document.getElementById('modal-container').innerHTML='';}
+function dlCSV(rows,name){const csv=rows.map(r=>r.join(';')).join('\n');const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent(csv);a.download=name;a.click();}
+function exportCSV(){const rows=[['Fecha','Cliente','Zona','Servicio','Modalidad','Jefe','Eq.','Horas','Ingreso','Coste','Margen%']];DB.bitacora.forEach(b=>{rows.push([b.fecha,getCl(b.cid).nombre,getCl(b.cid).zona,b.servicio||'',b.modalidad,getTrab(b.jid).nombre,b.nw,b.horas,Math.round(calcI(b)),Math.round(calcC(b)),calcM(b)]);});dlCSV(rows,'basso_bitacora.csv');}
+function exportFact(){const res={};DB.bitacora.forEach(b=>{if(!res[b.cid])res[b.cid]={i:0,co:0,h:0};res[b.cid].i+=calcI(b);res[b.cid].co+=calcC(b);res[b.cid].h+=b.horas||0;});const rows=[['Cliente','Zona','Horas','Ingreso','Coste','Beneficio','Margen%']];Object.entries(res).forEach(([cid,r])=>{const c2=getCl(parseInt(cid));const m=r.i>0?Math.round((r.i-r.co)/r.i*100):0;rows.push([c2.nombre,c2.zona,r.h,Math.round(r.i),Math.round(r.co),Math.round(r.i-r.co),m]);});dlCSV(rows,'basso_facturacion.csv');}
+function exportHoras(){const y=window._hY||new Date().getFullYear();const m=window._hM||new Date().getMonth();const rows=[['Trabajador','Tipo','Fecha','H.normal','H.extra','Ausente','Coste']];DB.horas.filter(h=>{const[hy,hm]=h.fecha.split('-');return parseInt(hy)===y&&parseInt(hm)-1===m;}).forEach(h=>{const w=getTrab(h.trabajador_id);rows.push([w.nombre,w.tipo,h.fecha,h.horas_normal,h.horas_extra,h.ausente?'SI':'NO',((h.horas_normal||0)+(h.horas_extra||0))*COSTE]);});dlCSV(rows,'basso_horas.csv');}
+</script>
+</body>
+</html>
