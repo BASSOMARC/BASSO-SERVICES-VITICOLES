@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#8B1A2B">
+<title>Basso Services Viticoles — Suivi des travaux</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --g:#8B1A2B;--gd:#6B1220;--gold:#C9A84C;--green:#1D9E75;
+  --bg:#faf8f5;--bg2:#fff;--border:#e8e4dd;
+  --text:#1a1a1a;--text2:#6b6b6b;--text3:#aaa;
+  --radius:10px;
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:14px;min-height:100vh}
+
+/* LOGIN */
+.login-page{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#6B1220 0%,#8B1A2B 60%,#C9A84C 100%);padding:20px}
+.login-box{background:#fff;border-radius:20px;padding:40px 36px;width:100%;max-width:400px;box-shadow:0 20px 60px rgba(0,0,0,.3);text-align:center}
+.login-logo{width:120px;height:120px;object-fit:contain;border-radius:50%;margin:0 auto 18px;display:block;border:3px solid var(--gold)}
+.login-title{font-size:22px;font-weight:700;color:var(--g);margin-bottom:6px}
+.login-sub{font-size:13px;color:var(--text2);margin-bottom:28px;line-height:1.5}
+.login-err{background:#FCEBEB;color:#791F1F;border:1px solid #E24B4A;border-radius:8px;padding:10px 14px;font-size:13px;margin-bottom:14px;display:none}
+.login-input{width:100%;padding:12px 16px;font-size:15px;border:2px solid var(--border);border-radius:10px;font-family:inherit;margin-bottom:14px;text-align:center;letter-spacing:.08em;text-transform:uppercase}
+.login-input:focus{outline:none;border-color:var(--g)}
+.btn-login{width:100%;padding:14px;background:var(--g);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;transition:background .2s;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-login:hover{background:var(--gd)}
+.login-hint{font-size:11px;color:var(--text3);margin-top:16px;line-height:1.5}
+
+/* HEADER */
+.app{display:none;min-height:100vh;flex-direction:column}
+.header{background:linear-gradient(135deg,var(--gd),var(--g));padding:0 24px;position:sticky;top:0;z-index:50;box-shadow:0 2px 20px rgba(0,0,0,.2)}
+.header-in{max-width:1000px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:64px}
+.header-left{display:flex;align-items:center;gap:12px}
+.header-logo{width:42px;height:42px;border-radius:50%;object-fit:contain;border:2px solid var(--gold)}
+.header-info .h-name{color:#fff;font-size:16px;font-weight:700}
+.header-info .h-sub{color:rgba(255,255,255,.65);font-size:11px;margin-top:1px}
+.header-right{display:flex;align-items:center;gap:8px}
+.client-chip{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);color:#fff;border-radius:20px;padding:5px 14px;font-size:12px;font-weight:600}
+.btn-out{background:none;border:1px solid rgba(255,255,255,.3);color:rgba(255,255,255,.75);border-radius:8px;padding:6px 12px;font-size:12px;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:5px}
+.btn-out:hover{background:rgba(255,255,255,.1);color:#fff}
+
+/* CONTENT */
+.content{max-width:1000px;margin:0 auto;padding:28px 24px;flex:1}
+
+/* TODAY BANNER */
+.today-banner{background:linear-gradient(135deg,var(--gold),#E8A020);border-radius:var(--radius);padding:18px 22px;margin-bottom:24px;display:flex;align-items:center;gap:16px}
+.today-banner.empty{background:var(--bg2);border:1px solid var(--border)}
+.today-icon{width:48px;height:48px;background:rgba(255,255,255,.25);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:22px}
+.today-info .t-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.8);margin-bottom:3px}
+.today-info .t-title{font-size:17px;font-weight:700;color:#fff;margin-bottom:4px}
+.today-info .t-meta{font-size:12px;color:rgba(255,255,255,.85)}
+.today-banner.empty .t-label{color:var(--text3)}
+.today-banner.empty .t-title{color:var(--text2)}
+.today-prog{margin-left:auto;text-align:center;flex-shrink:0}
+.today-prog .prog-n{font-size:32px;font-weight:700;color:#fff;line-height:1}
+.today-prog .prog-l{font-size:10px;color:rgba(255,255,255,.75);text-transform:uppercase;letter-spacing:.08em}
+
+/* STATS */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+.stat{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:16px;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,.04)}
+.stat-n{font-size:32px;font-weight:700;line-height:1;margin-bottom:5px}
+.stat-l{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:.08em}
+
+/* TABS */
+.tabs{display:flex;border-bottom:2px solid var(--border);margin-bottom:20px;gap:0}
+.tab{padding:10px 20px;font-size:13px;font-weight:500;cursor:pointer;color:var(--text2);border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s;display:flex;align-items:center;gap:6px}
+.tab:hover{color:var(--text)}
+.tab.active{color:var(--g);border-bottom-color:var(--g);font-weight:600}
+
+/* KANBAN */
+.kanban{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.col{background:#fff;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.04)}
+.col-header{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.col-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;display:flex;align-items:center;gap:6px}
+.col-count{background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:2px 8px;font-size:11px;color:var(--text2)}
+.col-planifie{border-top:3px solid #9ca3af}
+.col-encours{border-top:3px solid var(--gold)}
+.col-termine{border-top:3px solid var(--green)}
+.col-body{padding:10px;min-height:100px}
+.kcard{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-bottom:8px}
+.kcard:last-child{margin-bottom:0}
+.kcard-title{font-weight:600;font-size:13px;margin-bottom:4px}
+.kcard-service{font-size:11px;color:var(--text2);margin-bottom:6px;display:flex;align-items:center;gap:4px}
+.kcard-date{font-size:11px;color:var(--text3);display:flex;align-items:center;gap:4px;margin-bottom:8px}
+.prog-wrap{margin-top:6px}
+.prog-label{display:flex;justify-content:space-between;font-size:11px;color:var(--text2);margin-bottom:4px}
+.prog-bar{height:6px;background:#e8e4dd;border-radius:3px;overflow:hidden}
+.prog-fill{height:100%;border-radius:3px;transition:width .8s ease}
+.prog-gold{background:var(--gold)}
+.prog-green{background:var(--green)}
+.empty-col{text-align:center;padding:28px 12px;color:var(--text3);font-size:12px}
+
+/* HISTORIQUE */
+.hist-table{width:100%;border-collapse:collapse;font-size:13px}
+.hist-table th{text-align:left;padding:8px 12px;font-size:10px;font-weight:700;color:var(--text2);border-bottom:2px solid var(--border);text-transform:uppercase;letter-spacing:.06em;white-space:nowrap}
+.hist-table td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:middle}
+.hist-table tr:last-child td{border-bottom:none}
+.hist-table tr:hover td{background:var(--bg)}
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:600}
+.badge-green{background:#DCFCE7;color:#166534}
+.badge-gold{background:#FEF3C7;color:#92400E}
+.total-row{background:var(--bg);font-weight:700}
+.total-row td{padding:12px;border-top:2px solid var(--border)}
+
+/* CONTACT */
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}
+.contact-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:20px;display:flex;flex-direction:column;gap:12px;box-shadow:0 1px 4px rgba(0,0,0,.04)}
+.contact-name{font-weight:700;font-size:15px}
+.contact-role{font-size:12px;color:var(--text2)}
+.btn-wa{background:#25D366;color:#fff;border:none;border-radius:8px;padding:10px 16px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:8px;text-decoration:none;justify-content:center;transition:background .2s}
+.btn-wa:hover{background:#1ebe5d}
+.btn-mail{background:var(--g);color:#fff;border:none;border-radius:8px;padding:10px 16px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:8px;text-decoration:none;justify-content:center;transition:background .2s}
+.btn-mail:hover{background:var(--gd)}
+.btn-drive{background:#1a73e8;color:#fff;border:none;border-radius:8px;padding:12px 16px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:8px;text-decoration:none;justify-content:center;transition:background .2s;width:100%}
+.btn-drive:hover{background:#1557b0}
+
+/* FOOTER */
+.footer{background:var(--g);color:rgba(255,255,255,.6);text-align:center;padding:20px;font-size:11px;margin-top:auto}
+.footer a{color:rgba(255,255,255,.8);text-decoration:none}
+
+/* UPDATE */
+.update-info{text-align:center;font-size:11px;color:var(--text3);padding:12px;display:flex;align-items:center;justify-content:center;gap:6px}
+
+@media(max-width:700px){
+  .kanban{grid-template-columns:1fr}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .contact-grid{grid-template-columns:1fr}
+  .header-in{height:56px}
+  .content{padding:16px}
+  .today-prog{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-page" id="login-page">
+  <div class="login-box">
+    <img class="login-logo" src="https://i.postimg.cc/bvDHmp47/WhatsApp-Image-2026-05-14-at-17-24-20-(6).jpg" alt="Basso">
+    <div class="login-title">Basso Services Viticoles</div>
+    <div class="login-sub">Accédez au suivi en temps réel<br>de vos travaux viticoles</div>
+    <div class="login-err" id="login-err"><i class="ti ti-alert-circle"></i> Code incorrect. Contactez votre responsable.</div>
+    <input type="text" class="login-input" id="code-input" placeholder="CODE D'ACCÈS" autocomplete="off" autocapitalize="characters">
+    <button class="btn-login" onclick="doLogin()"><i class="ti ti-lock-open"></i> Accéder à mon espace</button>
+    <div class="login-hint">Code fourni par Basso Services Viticoles<br>contact@bassosv.fr · 06 38 73 39 50</div>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="app" id="app">
+  <div class="header">
+    <div class="header-in">
+      <div class="header-left">
+        <img class="header-logo" src="https://i.postimg.cc/bvDHmp47/WhatsApp-Image-2026-05-14-at-17-24-20-(6).jpg" alt="Basso">
+        <div class="header-info">
+          <div class="h-name">Basso Services Viticoles</div>
+          <div class="h-sub" id="header-zone">Saint-Émilion · Pomerol · Fronsac</div>
+        </div>
+      </div>
+      <div class="header-right">
+        <span class="client-chip" id="client-chip">—</span>
+        <button class="btn-out" onclick="doLogout()"><i class="ti ti-logout"></i> Quitter</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+    <!-- HOY EN TU VIÑEDO -->
+    <div id="today-section"></div>
+
+    <!-- STATS -->
+    <div class="stats">
+      <div class="stat"><div class="stat-n" id="st-plan" style="color:#9ca3af">0</div><div class="stat-l">Planifiés</div></div>
+      <div class="stat"><div class="stat-n" id="st-cours" style="color:var(--gold)">0</div><div class="stat-l">En cours</div></div>
+      <div class="stat"><div class="stat-n" id="st-term" style="color:var(--green)">0</div><div class="stat-l">Terminés</div></div>
+      <div class="stat"><div class="stat-n" id="st-prog" style="color:var(--g)">0%</div><div class="stat-l">Avancement global</div></div>
+    </div>
+
+    <!-- TABS -->
+    <div class="tabs">
+      <div class="tab active" onclick="showTab('suivi',this)"><i class="ti ti-layout-kanban"></i> Suivi des travaux</div>
+      <div class="tab" onclick="showTab('historique',this)"><i class="ti ti-history"></i> Historique & Facturation</div>
+      <div class="tab" onclick="showTab('contact',this)"><i class="ti ti-phone"></i> Contact & Documents</div>
+    </div>
+
+    <!-- TAB SUIVI -->
+    <div id="tab-suivi">
+      <div class="kanban">
+        <div class="col col-planifie">
+          <div class="col-header">
+            <span class="col-title" style="color:#6b7280"><i class="ti ti-clock"></i> Planifié</span>
+            <span class="col-count" id="cnt-plan">0</span>
+          </div>
+          <div class="col-body" id="cards-plan"></div>
+        </div>
+        <div class="col col-encours">
+          <div class="col-header">
+            <span class="col-title" style="color:#d97706"><i class="ti ti-player-play"></i> En cours</span>
+            <span class="col-count" id="cnt-cours">0</span>
+          </div>
+          <div class="col-body" id="cards-cours"></div>
+        </div>
+        <div class="col col-termine">
+          <div class="col-header">
+            <span class="col-title" style="color:var(--green)"><i class="ti ti-check"></i> Terminé</span>
+            <span class="col-count" id="cnt-term">0</span>
+          </div>
+          <div class="col-body" id="cards-term"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB HISTORIQUE -->
+    <div id="tab-historique" style="display:none">
+      <div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.04)">
+        <div style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+          <div style="font-weight:700;font-size:15px">Historique des travaux 2026</div>
+          <span style="font-size:12px;color:var(--text2)" id="hist-count">—</span>
+        </div>
+        <div style="overflow-x:auto">
+          <table class="hist-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Service</th>
+                <th>Modalité</th>
+                <th>Quantité</th>
+                <th>Montant HT</th>
+                <th>Statut</th>
+              </tr>
+            </thead>
+            <tbody id="hist-body">
+              <tr><td colspan="6" style="text-align:center;padding:30px;color:var(--text3)">Chargement...</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="total-row" id="hist-total" style="display:none">
+          <table style="width:100%;border-collapse:collapse">
+            <tr>
+              <td style="padding:14px 20px;font-weight:700;font-size:14px">Total facturé 2026</td>
+              <td style="padding:14px 20px;text-align:right;font-weight:700;font-size:18px;color:var(--g)" id="hist-total-val">0 €</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB CONTACT -->
+    <div id="tab-contact" style="display:none">
+      <div class="contact-grid">
+        <div class="contact-card">
+          <div>
+            <div class="contact-name">Marc Basso</div>
+            <div class="contact-role">Gérant · Basso Services Viticoles</div>
+          </div>
+          <a class="btn-wa" href="https://wa.me/33638733950" target="_blank">
+            <i class="ti ti-brand-whatsapp"></i> WhatsApp Marc
+          </a>
+          <a class="btn-mail" href="mailto:contact@bassosv.fr">
+            <i class="ti ti-mail"></i> contact@bassosv.fr
+          </a>
+        </div>
+        <div class="contact-card">
+          <div>
+            <div class="contact-name">Fernando Perez</div>
+            <div class="contact-role">Co-gérant · Basso Services Viticoles</div>
+          </div>
+          <a class="btn-wa" href="https://wa.me/33781757352" target="_blank">
+            <i class="ti ti-brand-whatsapp"></i> WhatsApp Fernando
+          </a>
+          <a class="btn-mail" href="mailto:bassomarc85@gmail.com">
+            <i class="ti ti-mail"></i> bassomarc85@gmail.com
+          </a>
+        </div>
+      </div>
+
+      <!-- FACTURAS DRIVE -->
+      <div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:22px;box-shadow:0 1px 4px rgba(0,0,0,.04)">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+          <i class="ti ti-folder" style="font-size:22px;color:#1a73e8"></i>
+          <div>
+            <div style="font-weight:700;font-size:15px">Mes factures</div>
+            <div style="font-size:12px;color:var(--text2)">Accédez à toutes vos factures 2026 sur Google Drive</div>
+          </div>
+        </div>
+        <a class="btn-drive" id="btn-drive" href="#" target="_blank">
+          <i class="ti ti-brand-google-drive"></i> Ouvrir mon dossier de factures
+        </a>
+        <div style="font-size:11px;color:var(--text3);text-align:center;margin-top:10px">Documents mis à jour par Basso Services Viticoles</div>
+      </div>
+    </div>
+
+    <div class="update-info" id="update-info">
+      <i class="ti ti-refresh" style="font-size:12px"></i>
+      <span id="update-txt">Actualisation automatique toutes les 5 minutes</span>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div style="margin-bottom:6px;color:rgba(255,255,255,.9);font-weight:600">Basso Services Viticoles</div>
+    Saint-Émilion · Pomerol · Fronsac · Bordeaux, France<br>
+    <a href="tel:+33638733950">06 38 73 39 50</a> · <a href="mailto:contact@bassosv.fr">contact@bassosv.fr</a> · <a href="https://bassoviticulture.com" target="_blank">bassoviticulture.com</a>
+  </div>
+</div>
+
+<script>
+const SB='https://yopdehtfbfjdaocnbmgo.supabase.co';
+const SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlvcGRlaHRmYmZqZGFvY25ibWdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0MDI5NDcsImV4cCI6MjA5Nzk3ODk0N30.yoMs_TaBFcJWvjSAzzr11gson31iwUXNO-UCCpdo1c8';
+const H={'apikey':SK,'Authorization':'Bearer '+SK};
+
+async function sbGet(t,p){
+  const r=await fetch(SB+'/rest/v1/'+t+'?'+p,{headers:H});
+  if(!r.ok)throw new Error(await r.text());
+  return r.json();
+}
+
+let currentClient=null;
+
+async function doLogin(){
+  const code=document.getElementById('code-input').value.trim().toUpperCase();
+  document.getElementById('login-err').style.display='none';
+  if(!code){return;}
+  try{
+    const res=await sbGet('clientes','select=id,nombre,zona,codigo_acceso,drive_url&activo=eq.true&codigo_acceso=eq.'+encodeURIComponent(code));
+    if(!res||!res.length){
+      document.getElementById('login-err').style.display='flex';
+      return;
+    }
+    const cl=res[0];
+    currentClient={cid:cl.id,nombre:cl.nombre,zona:cl.zona||'Bordeaux',drive_url:cl.drive_url||'',code};
+    sessionStorage.setItem('bsv_client',JSON.stringify(currentClient));
+    showApp();
+  }catch(e){
+    document.getElementById('login-err').style.display='flex';
+  }
+}
+
+function doLogout(){
+  sessionStorage.removeItem('bsv_client');
+  currentClient=null;
+  document.getElementById('app').style.display='none';
+  document.getElementById('login-page').style.display='flex';
+  document.getElementById('code-input').value='';
+}
+
+function showTab(tab,el){
+  ['suivi','historique','contact'].forEach(t=>{
+    document.getElementById('tab-'+t).style.display=t===tab?'block':'none';
+  });
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  if(el)el.classList.add('active');
+  if(tab==='historique')loadHistorique();
+}
+
+async function showApp(){
+  document.getElementById('login-page').style.display='none';
+  const app=document.getElementById('app');
+  app.style.display='flex';
+  document.getElementById('client-chip').textContent=currentClient.nombre;
+  document.getElementById('header-zone').textContent=currentClient.zona+' · Bordeaux';
+  // Drive URL
+  const driveBtn=document.getElementById('btn-drive');
+  if(currentClient.drive_url){driveBtn.href=currentClient.drive_url;}
+  else{driveBtn.style.opacity='.5';driveBtn.style.pointerEvents='none';}
+  await loadTasks();
+}
+
+async function loadTasks(){
+  try{
+    const hoy=new Date().toISOString().slice(0,10);
+    const tasks=await sbGet('kanban',
+      'select=id,titulo,servicio,columna,fecha_prevista,progreso&cid=eq.'+currentClient.cid
+      +'&order=fecha_prevista.asc'
+    );
+
+    const planifie=tasks.filter(k=>k.columna==='pendiente'||k.columna==='porhacer');
+    const encours=tasks.filter(k=>k.columna==='encurso'||k.columna==='urgente');
+    const termine=tasks.filter(k=>k.columna==='terminado');
+
+    // BANNER HOY
+    const hoyTask=encours.find(k=>k.fecha_prevista===hoy)||encours[0];
+    const todayEl=document.getElementById('today-section');
+    if(hoyTask){
+      const prog=hoyTask.progreso||0;
+      todayEl.innerHTML='<div class="today-banner">'
+        +'<div class="today-icon">🍇</div>'
+        +'<div class="today-info">'
+          +'<div class="t-label">Aujourd\'hui dans votre vignoble</div>'
+          +'<div class="t-title">'+(hoyTask.servicio||hoyTask.titulo.split('—').pop().trim())+'</div>'
+          +'<div class="t-meta"><i class="ti ti-calendar" style="font-size:11px"></i> '+(hoyTask.fecha_prevista||'—')+' · En cours</div>'
+        +'</div>'
+        +'<div class="today-prog"><div class="prog-n">'+prog+'%</div><div class="prog-l">Avancement</div></div>'
+      +'</div>';
+    } else {
+      todayEl.innerHTML='<div class="today-banner empty">'
+        +'<div class="today-icon" style="background:var(--bg2);border:1px solid var(--border)">📋</div>'
+        +'<div class="today-info">'
+          +'<div class="t-label" >Aucun travail en cours aujourd\'hui</div>'
+          +'<div class="t-title" style="font-size:14px">Consultez les travaux planifiés ci-dessous</div>'
+        +'</div>'
+      +'</div>';
+    }
+
+    // STATS
+    const total=tasks.length;
+    const totalProg=tasks.reduce((a,k)=>{
+      if(k.columna==='terminado')return a+100;
+      return a+(k.progreso||0);
+    },0);
+    const avgProg=total>0?Math.round(totalProg/total):0;
+    document.getElementById('st-plan').textContent=planifie.length;
+    document.getElementById('st-cours').textContent=encours.length;
+    document.getElementById('st-term').textContent=termine.length;
+    document.getElementById('st-prog').textContent=avgProg+'%';
+    document.getElementById('cnt-plan').textContent=planifie.length;
+    document.getElementById('cnt-cours').textContent=encours.length;
+    document.getElementById('cnt-term').textContent=termine.length;
+
+    // KANBAN
+    document.getElementById('cards-plan').innerHTML=renderKanban(planifie,'plan');
+    document.getElementById('cards-cours').innerHTML=renderKanban(encours,'cours');
+    document.getElementById('cards-term').innerHTML=renderKanban(termine,'term');
+
+    // Update time
+    const now=new Date();
+    document.getElementById('update-txt').textContent=
+      'Dernière mise à jour : '+now.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})+
+      ' · Actualisation automatique toutes les 5 min';
+
+  }catch(e){console.error(e);}
+}
+
+function renderKanban(tasks,type){
+  if(!tasks.length){
+    const msgs={plan:'Aucun travail planifié',cours:'Aucun travail en cours',term:'Aucun travail terminé'};
+    return '<div class="empty-col"><i class="ti ti-'+(type==='term'?'check-circle':'clock')+'" style="font-size:24px;display:block;margin-bottom:8px;opacity:.3"></i>'+msgs[type]+'</div>';
+  }
+  return tasks.map(k=>{
+    const prog=k.columna==='terminado'?100:(k.progreso||0);
+    const showProg=type!=='plan';
+    const dateStr=k.fecha_prevista?new Date(k.fecha_prevista+'T12:00:00').toLocaleDateString('fr-FR',{day:'numeric',month:'long'}):'—';
+    const servicio=k.servicio||(k.titulo.split('—')[0]||k.titulo).trim();
+    return '<div class="kcard">'
+      +'<div class="kcard-title">'+esc(servicio)+'</div>'
+      +'<div class="kcard-date"><i class="ti ti-calendar" style="font-size:10px"></i> '+dateStr+'</div>'
+      +(showProg?
+        '<div class="prog-wrap">'
+          +'<div class="prog-label"><span>Avancement</span><strong>'+prog+'%</strong></div>'
+          +'<div class="prog-bar"><div class="prog-fill '+(prog===100?'prog-green':'prog-gold')+'" style="width:'+prog+'%"></div></div>'
+        +'</div>'
+      :'')
+      +(type==='term'?'<span class="badge badge-green" style="margin-top:8px;display:inline-flex"><i class="ti ti-check" style="font-size:10px;margin-right:3px"></i> Terminé</span>':'')
+    +'</div>';
+  }).join('');
+}
+
+async function loadHistorique(){
+  try{
+    const bitacora=await sbGet('bitacora',
+      'select=fecha,servicio,modalidad,horas,cepas,kg,unidad&cid=eq.'+currentClient.cid
+      +'&order=fecha.desc'
+    );
+    const servicios=await sbGet('servicios_cliente',
+      'select=servicio,precio_hora,precio_cepa,precio_kg,precio_t&cid=eq.'+currentClient.cid
+    );
+
+    function calcImporte(b){
+      const s=servicios.find(x=>x.servicio===b.servicio);
+      if(!s)return 0;
+      if(b.modalidad==='horas')return(b.horas||0)*(s.precio_hora||0);
+      if(b.modalidad==='cepas')return(b.cepas||0)*(s.precio_cepa||0);
+      if(b.modalidad==='kg'&&b.unidad==='t')return(b.kg||0)*(s.precio_t||0);
+      if(b.modalidad==='kg')return(b.kg||0)*(s.precio_kg||0);
+      return 0;
+    }
+
+    document.getElementById('hist-count').textContent=bitacora.length+' travaux réalisés';
+    let total=0;
+    const rows=bitacora.map(b=>{
+      const imp=calcImporte(b);
+      total+=imp;
+      const dateStr=new Date(b.fecha+'T12:00:00').toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'});
+      const modLabel={horas:'Horaire',cepas:'Au cep',kg:'Au kg/t'}[b.modalidad]||b.modalidad;
+      const qte=b.modalidad==='horas'?(b.horas||0)+'h':b.modalidad==='cepas'?(b.cepas||0)+' ceps':(b.kg||0)+' '+(b.unidad||'kg');
+      return'<tr>'
+        +'<td>'+dateStr+'</td>'
+        +'<td style="font-weight:500">'+esc(b.servicio||'—')+'</td>'
+        +'<td><span class="badge" style="background:#F3F4F6;color:#374151">'+modLabel+'</span></td>'
+        +'<td>'+qte+'</td>'
+        +'<td style="font-weight:600">'+Math.round(imp).toLocaleString('fr-FR')+' €</td>'
+        +'<td><span class="badge badge-green"><i class="ti ti-check" style="font-size:10px;margin-right:3px"></i> Validé</span></td>'
+      +'</tr>';
+    }).join('');
+
+    document.getElementById('hist-body').innerHTML=rows||'<tr><td colspan="6" style="text-align:center;padding:30px;color:var(--text3)">Aucun travail enregistré pour le moment</td></tr>';
+
+    if(bitacora.length){
+      document.getElementById('hist-total').style.display='block';
+      document.getElementById('hist-total-val').textContent=Math.round(total).toLocaleString('fr-FR')+' €';
+    }
+  }catch(e){console.error(e);}
+}
+
+function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+// Auto-refresh cada 5 min
+setInterval(()=>{if(currentClient)loadTasks();},5*60*1000);
+
+// Restaurar sesión
+const saved=sessionStorage.getItem('bsv_client');
+if(saved){try{currentClient=JSON.parse(saved);showApp();}catch(e){}}
+
+document.getElementById('code-input').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
+</script>
+</body>
+</html>
