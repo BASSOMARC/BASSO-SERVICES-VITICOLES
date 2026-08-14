@@ -1,4 +1,4 @@
-const CACHE = 'basso-erp-v2';
+const CACHE = 'basso-erp-v3';
 const ASSETS = [
   '/BASSO-SERVICES-VITICOLES/',
   '/BASSO-SERVICES-VITICOLES/index.html'
